@@ -35,6 +35,7 @@ contains
     use restart,only: prep_restart_read
     use io_gs_wfn_k,only: modify_initial_guess_copy_1stk_to_all
     implicit none
+    integer :: itmp
 !$ integer :: omp_get_max_threads  
 
     call timer_initialize
@@ -719,6 +720,8 @@ contains
     use Global_Variables
     use salmon_parallel
     implicit none
+    integer i
+    real(8) x
     
     !! Set the size of macroscopic grid
     nx1_m = min(NXvacL_m, nx_origin_m) 
@@ -749,6 +752,14 @@ contains
     allocate(Jm_old_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
     allocate(Jm_new_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
     Jm_ms = 0d0; Jm_old_ms = 0d0; Jm_new_ms = 0d0
+    
+    if(FDTDdim == 'oblique') then
+       allocate(Pm_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
+       allocate(Pm_old_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
+       allocate(Pm_new_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
+    endif
+    Pm_ms = 0d0; Pm_old_ms = 0d0; Pm_new_ms = 0d0
+
     allocate(elec_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
     allocate(bmag_ms(1:3, nx1_m:nx2_m, ny1_m:ny2_m, nz1_m:nz2_m))
     elec_ms = 0d0; bmag_ms = 0d0
@@ -768,6 +779,16 @@ contains
     allocate(Jm_m(1:3, nmacro))
     allocate(Jm_new_m(1:3, nmacro))
     allocate(jm_new_m_tmp(1:3, nmacro))
+    if(FDTDdim == 'oblique') then
+       allocate(weight_oblique(nmacro))
+    endif
+    weight_oblique=1d0
+    do i=1,n_smooth_oblique
+      x=dble(i)/n_smooth_oblique
+      weight_oblique(i)=3*x**2-2*x**3
+      weight_oblique(nmacro-(i-1))=weight_oblique(i)
+    enddo
+
     if(use_ehrenfest_md=='y') then
        allocate(jm_ion_new_m_tmp(1:3, nmacro))
        allocate(Jm_ion_m(    1:3, nmacro))
@@ -835,7 +856,7 @@ contains
     integer :: ix_m, iy_m, iz_m, icount,i
     
     select case (FDTDdim)
-    case("1D", "1d")
+    case("1D", "1d", "oblique")
       nmacro = nx_m
       ny_m = 1; ny_origin_m = 1;
       nz_m = 1; nz_origin_m = 1;

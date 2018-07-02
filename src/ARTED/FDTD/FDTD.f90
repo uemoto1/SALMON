@@ -85,6 +85,12 @@ subroutine init_ac_ms
 
 !  aY=40000d0
 
+  if(FDTDdim == 'oblique') then
+    theta_oblique_rad = theta_oblique_deg*pi/180d0
+    cos_oblique = cos(theta_oblique_rad)
+    sin_oblique = sin(theta_oblique_rad)
+  endif
+
   call comm_sync_all
 
   select case(FDTDdim)
@@ -258,6 +264,56 @@ subroutine init_ac_ms
      case default
         call Err_finalize("Invalid pulse_shape_1 parameter!")
      end select
+   case('oblique')
+      select case(ae_shape1)
+      case('Acos2','Acos3','Acos4','Acos6','Acos8')
+        select case(ae_shape1)
+        case('Acos2'); npower = 2
+        case('Acos3'); npower = 3
+        case('Acos4'); npower = 4
+        case('Acos6'); npower = 6
+        case('Acos8'); npower = 8
+        case default
+          stop 'Error in init_Ac.f90'
+        end select
+
+        do iy_m = ny1_m, ny2_m
+        do iz_m = nz1_m, nz2_m
+        
+            do ix_m = nx1_m, nx2_m
+               x=(ix_m-1)*HX_m + Xstart + 0.5d0*pulse_tw1*c_light/cos_oblique
+
+               if(abs(x) < 0.5d0*pulse_tw1*c_light/cos_oblique) then
+                  Ac_ms(3,ix_m, iy_m, iz_m)= &
+                       cos_oblique*f0_1/omega1*cos(pi*x*cos_oblique/(pulse_tw1*c_light))**npower &
+                      *sin(omega1*x*cos_oblique/c_light+phi_CEP1*2d0*pi)
+                  
+                  Ac_ms(1,ix_m, iy_m, iz_m)= &
+                      -sin_oblique*f0_1/omega1*cos(pi*x*cos_oblique/(pulse_tw1*c_light))**npower &
+                      *sin(omega1*x*cos_oblique/c_light+phi_CEP1*2d0*pi)
+               endif
+
+
+               x=x-dt*c_light/cos_oblique
+
+               if(abs(x) < 0.5d0*pulse_tw1*c_light/cos_oblique) then
+                  Ac_new_ms(3,ix_m, iy_m, iz_m)= &
+                       cos_oblique*f0_1/omega1*cos(pi*x*cos_oblique/(pulse_tw1*c_light))**npower &
+                      *sin(omega1*x*cos_oblique/c_light+phi_CEP1*2d0*pi)
+                  
+                  Ac_new_ms(1,ix_m, iy_m, iz_m)= &
+                      -sin_oblique*f0_1/omega1*cos(pi*x*cos_oblique/(pulse_tw1*c_light))**npower &
+                      *sin(omega1*x*cos_oblique/c_light+phi_CEP1*2d0*pi)
+               endif
+
+            end do
+        end do
+        end do
+          
+      case('none')
+      case default
+         call Err_finalize("Invalid pulse_shape_1 parameter!")
+      end select
 
  ! case('2D', '2d', '3D', '3d')
  ! 
@@ -406,6 +462,35 @@ subroutine dt_evolve_Ac_1d
 
   return
 end subroutine dt_evolve_Ac_1d
+
+!===========================================================
+subroutine dt_evolve_Ac_oblique
+  use Global_variables
+  implicit none
+  integer :: ix_m
+  integer :: iy_m
+  integer :: iz_m
+
+  iz_m = nz_origin_m
+  iy_m = ny_origin_m
+!$omp parallel do default(shared) private(ix_m)
+  do ix_m=nx1_m, nx2_m
+    Pm_new_ms(1,ix_m,iy_m,iz_m) = Pm_old_ms(1,ix_m,iy_m,iz_m) + (2*dt) * Jm_ms(1,ix_m,iy_m,iz_m)
+    Ac_new_ms(3,ix_m,iy_m,iz_m) = 2*Ac_ms(3,ix_m,iy_m,iz_m) - Ac_old_ms(3,ix_m,iy_m,iz_m) &
+      & + (c_light*dt/cos_oblique)**2 &
+      & * (Ac_ms(3,ix_m+1,iy_m,iz_m)-2*Ac_ms(3,ix_m,iy_m,iz_m)+Ac_ms(3,ix_m-1,iy_m,iz_m))/Hx_m**2 &
+      & - 4*pi*dt**2*Jm_ms(3,ix_m,iy_m,iz_m) &
+      & - 4*pi*sin_oblique/cos_oblique**2*c_light*dt**2 &
+      & * (Pm_ms(1,ix_m+1,iy_m,iz_m)-Pm_ms(1,ix_m-1,iy_m,iz_m))/(2*Hx_m)
+    Ac_new_ms(1,ix_m,iy_m,iz_m) = Ac_old_ms(1,ix_m,iy_m,iz_m) &
+      & + 2*dt*c_light*sin_oblique/cos_oblique**2*(Ac_ms(3,ix_m+1,iy_m,iz_m)-Ac_ms(3,ix_m-1,iy_m,iz_m))/(2*Hx_m) &
+      & - 4*pi*(2*dt)/cos_oblique**2*Pm_ms(1,ix_m,iy_m,iz_m)
+  enddo
+!$omp end parallel do
+
+  return
+end subroutine dt_evolve_Ac_oblique
+
 !===========================================================
 subroutine dt_evolve_Ac_2d
   use Global_variables
@@ -624,6 +709,8 @@ subroutine dt_evolve_Ac
   select case(FDTDdim)
   case('1d', '1D')
     call dt_evolve_Ac_1d()
+  case('oblique')
+    call dt_evolve_Ac_oblique()
   case('2d', '2D')
     call dt_evolve_Ac_2d()
   case('2dc', '2DC')

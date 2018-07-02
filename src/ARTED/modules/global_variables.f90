@@ -239,6 +239,7 @@ Module Global_Variables
   real(8),allocatable :: Ac_old_ms(:,:,:,:),  Ac_ms(:,:,:,:), Ac_new_ms(:,:,:,:)
   real(8),allocatable :: add_Ac_ms(:,:,:,:),  add_Ac_new_ms(:,:,:,:)
   real(8),allocatable :: Jm_old_ms(:,:,:,:),  Jm_ms(:,:,:,:), Jm_new_ms(:,:,:,:)
+  real(8),allocatable :: Pm_old_ms(:,:,:,:),  Pm_ms(:,:,:,:), Pm_new_ms(:,:,:,:)
   real(8),allocatable :: Jm_ion_old_ms(:,:,:,:),Jm_ion_ms(:,:,:,:),Jm_ion_new_ms(:,:,:,:)
   real(8),allocatable :: elec_ms(:,:,:,:)
   real(8),allocatable :: bmag_ms(:,:,:,:)
@@ -252,6 +253,7 @@ Module Global_Variables
 
   real(8) :: ms_angle_x, ms_angle_y, ms_angle_z
   real(8) :: trans_mat(3, 3), trans_inv(3, 3)
+  real(8) :: theta_oblique_rad, cos_oblique, sin_oblique
 
   !! Calculate Pure FDTD Calculation without TDDFT:
   !! NOTE: This switch will be removed after marging the common FDTD routine..
@@ -272,6 +274,7 @@ Module Global_Variables
   
   real(8),allocatable :: Ac_m(:,:), Ac_new_m(:,:), Ac_old_m(:,:)
   real(8),allocatable :: Jm_m(:,:), Jm_new_m(:,:)
+  real(8),allocatable :: weight_oblique(:)
   real(8),allocatable :: Jm_ion_m(:,:), Jm_ion_new_m(:,:)
   real(8),allocatable :: jm_new_m_tmp(:,:),jm_ion_new_m_tmp(:,:)
   real(8),allocatable :: energy_elec_Matter_new_m(:)

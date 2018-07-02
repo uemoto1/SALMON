@@ -369,7 +369,9 @@ contains
       & file_macropoint, &
       & num_macropoint,  &
       & set_ini_coor_vel,&
-      & nmacro_write_group
+      & nmacro_write_group, &
+      & n_smooth_oblique, & 
+      & theta_oblique_deg
 
     namelist/analysis/ &
       & projection_option, &
@@ -1051,6 +1053,8 @@ contains
     call comm_bcast(num_macropoint,  nproc_group_global)
     call comm_bcast(set_ini_coor_vel,nproc_group_global)
     call comm_bcast(nmacro_write_group,nproc_group_global)
+    call comm_bcast(n_smooth_oblique,nproc_group_global)
+    call comm_bcast(theta_oblique_deg,nproc_group_global)
     
     
 !! == bcast for &analysis

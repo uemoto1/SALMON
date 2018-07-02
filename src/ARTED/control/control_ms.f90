@@ -434,6 +434,9 @@ subroutine tddft_maxwell_ms
       !Jm_new_ms(1:3, ix_m, iy_m, iz_m) = Jm_new_ms(1:3, ix_m, iy_m, iz_m) & 
       !                               & + Jm_new_m(1:3, imacro)
       Jm_new_ms(1:3, ix_m, iy_m, iz_m) = matmul(trans_inv(1:3,1:3), Jm_new_m(1:3, imacro))
+      if(FDTDdim == 'oblique') then
+        Jm_new_ms(1:3,ix_m,iy_m,iz_m) = Jm_new_m(1:3,imacro)*weight_oblique(imacro)
+      endif
       if(use_ehrenfest_md=='y') &
       Jm_ion_new_ms(1:3,ix_m,iy_m,iz_m) = matmul(trans_inv(1:3,1:3), Jm_ion_new_m(1:3,imacro))
     end do
@@ -650,6 +653,20 @@ contains
       end do
     end do
 !$omp end parallel do
+
+if(FDTDdim == 'oblique') then
+!$omp parallel do collapse(3) default(shared) private(iix_m, iiy_m, iiz_m)
+  do iiz_m = nz1_m, nz2_m
+    do iiy_m = ny1_m, ny2_m
+      do iix_m = nx1_m, nx2_m
+        Pm_old_ms(1:3, iix_m, iiy_m, iiz_m) = Pm_ms    (1:3, iix_m, iiy_m, iiz_m)
+        Pm_ms    (1:3, iix_m, iiy_m, iiz_m) = Pm_new_ms(1:3, iix_m, iiy_m, iiz_m)
+        Pm_new_ms(1:3, iix_m, iiy_m, iiz_m) = 0d0
+      end do
+    end do
+  end do
+!$omp end parallel do
+endif
 
 !$omp parallel do default(shared) private(iimacro, iix_m, iiy_m, iiz_m)
     do iimacro = 1, nmacro

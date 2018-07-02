@@ -204,6 +204,8 @@ module salmon_global
   character(1)   :: set_ini_coor_vel
   integer        :: nmacro_write_group
   !! TODO: remove num_macropoint later
+  integer        :: n_smooth_oblique
+  real(8)        :: theta_oblique_deg
   
 !! &analysis
   character(2)   :: projection_option
