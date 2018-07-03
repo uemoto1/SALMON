@@ -18,8 +18,6 @@
 subroutine write_excited_electron(iter)
   use Global_Variables
   use salmon_file
-  use salmon_parallel
-  use salmon_communication
   implicit none
   integer iter, imacro, ix_m, iy_m, iz_m, fh
   character(100) file_exc_elec
@@ -53,6 +51,7 @@ subroutine init_ac_ms
   use Global_variables
   use salmon_file, only: open_filehandle
   use salmon_communication, only: comm_sync_all, comm_is_root
+  use salmon_parallel, only: nproc_group_global
   implicit none
   ! real(8) x,y
   real(8) x
@@ -315,7 +314,7 @@ subroutine init_ac_ms
         end do
         
         if (trim(ae_shape1) == "file") then
-          if (comm_is_root(nproc_id_tdks)) then
+          if (comm_is_root(nproc_group_global)) then
             fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
             read(fh, *) nac0
             do ii = 1, nac0
@@ -326,7 +325,7 @@ subroutine init_ac_ms
               ac_new_ms(1, ix_m, :, :) = ac_new_tmp(1)
               ac_new_ms(2, ix_m, :, :) = ac_new_tmp(2)
               ac_new_ms(3, ix_m, :, :) = ac_new_tmp(3)
-              write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m):", ii, ix_m
+              write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
             end do
           end if
           call comm_bcast(ac_ms,nproc_group_global)
