@@ -268,6 +268,7 @@ subroutine init_ac_ms
         call Err_finalize("Invalid pulse_shape_1 parameter!")
      end select
    case('oblique')
+      
       select case(ae_shape1)
       case('Acos2','Acos3','Acos4','Acos6','Acos8')
         select case(ae_shape1)
@@ -334,6 +335,11 @@ subroutine init_ac_ms
       case default
          call Err_finalize("Invalid pulse_shape_1 parameter!")
       end select
+      
+      if (comm_is_root(nproc_group_global)) then
+        write(*,*) "ae_shape1", ae_shape1
+      endif
+
 
  ! case('2D', '2d', '3D', '3d')
  ! 
