@@ -281,14 +281,20 @@ subroutine init_ac_ms
           read(fh, *) nac0
           do ii = 1, nac0
             read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
-            ac_ms(1, ix_m, :, :) = ac_tmp(1)
-            ac_ms(2, ix_m, :, :) = ac_tmp(2)
-            ac_ms(3, ix_m, :, :) = ac_tmp(3)
-            ac_new_ms(1, ix_m, :, :) = ac_new_tmp(1)
-            ac_new_ms(2, ix_m, :, :) = ac_new_tmp(2)
-            ac_new_ms(3, ix_m, :, :) = ac_new_tmp(3)
-            write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
+            do iy_m = ny1_m, ny2_m
+            do iz_m = nz1_m, nz2_m
+            ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
+            ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
+            ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
+            ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
+            ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
+            ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
+            end do
+            end do
           end do
+          write(*, '(a, i6)') "# Read initial field:", nac0
+          write(*, '(a, f12.5)') "# Maxval Ac_ms:", max(Ac_ms)
+          write(*, '(a, f12.5)') "# Minval Ac_ms:", min(Ac_ms)
         end if
         call comm_bcast(ac_ms,nproc_group_global)
         call comm_bcast(ac_new_ms,nproc_group_global)
