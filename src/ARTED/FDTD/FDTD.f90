@@ -51,7 +51,7 @@ subroutine init_ac_ms
   use Global_variables
   use salmon_file, only: open_filehandle
   use salmon_communication, only: comm_sync_all, comm_is_root, comm_bcast
-  use salmon_parallel, only: nproc_group_global
+  use salmon_parallel, only: nproc_group_global, nproc_id_global
   implicit none
   ! real(8) x,y
   real(8) x
@@ -282,7 +282,7 @@ WRITE(777,'(A)',ADVANCE='NO')'ae_shape1=';WRITE(777,*)ae_shape1,'';FLUSH(777)!ue
       case("file")
 WRITE(777,'(A)',ADVANCE='NO')'nproc_group_global=';WRITE(777,*)nproc_group_global,'';FLUSH(777)!uemoto!@w nproc_group_global
 WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:284 ';FLUSH(777)!uemoto!@c
-        if (comm_is_root(nproc_group_global)) then
+        if (comm_is_root(nproc_id_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
 WRITE(777,'(A)',ADVANCE='NO')'nac0=';WRITE(777,*)nac0,'';FLUSH(777)!uemoto!@w nac0
