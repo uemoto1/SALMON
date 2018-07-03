@@ -279,14 +279,15 @@ subroutine init_ac_ms
         if (comm_is_root(nproc_id_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
+          write(*,*) nac0, "#CHK1"
           do ii = 1, nac0
             read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
+            write(*,*) ix_m,  ac_tmp, ac_new_tmp, "#CHK2"
             do iy_m = ny1_m, ny2_m
             do iz_m = nz1_m, nz2_m
             ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
             ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
             ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
-            write(*,*) ix_m,  ac_ms(1, ix_m, iy_m, iz_m), "#CHK"
             ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
             ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
             ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
