@@ -49,7 +49,9 @@ end subroutine init_ac_ms_2dc
 !===============================================================
 subroutine init_ac_ms
   use Global_variables
-  use salmon_communication, only: comm_sync_all, comm_is_root
+  use salmon_file, only: open_filehandle
+  use salmon_communication, only: comm_sync_all, comm_is_root, comm_bcast
+  use salmon_parallel, only: nproc_group_global, nproc_id_global
   implicit none
   ! real(8) x,y
   real(8) x
@@ -59,6 +61,8 @@ subroutine init_ac_ms
   real(8) wpulse_1
   real(8) wpulse_2
   integer :: npower
+  integer :: fh, nac0, ii
+  real(8) :: ac_tmp(3), ac_new_tmp(3)
 ! 2D parameter  
   ! real(8) angle,kabs,kx,ky
   ! real(8) length_y
@@ -97,6 +101,31 @@ subroutine init_ac_ms
   case('1D','1d','2D','2d','3D','3d')
 !Pump
      select case(ae_shape1)
+     case("file")
+       ac_ms = 0d0
+       ac_new_ms = 0d0
+       if (comm_is_root(nproc_id_global)) then
+         fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
+         read(fh, *) nac0
+         do ii = 1, nac0
+           read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
+           do iy_m = ny1_m, ny2_m
+           do iz_m = nz1_m, nz2_m
+           ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
+           ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
+           ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
+           ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
+           ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
+           ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
+           end do
+           end do
+         end do
+         close(fh)
+         write(*, '(a, i6)') "# Read initial field:", nac0
+       end if
+       call comm_bcast(ac_ms,nproc_group_global)
+       call comm_bcast(ac_new_ms,nproc_group_global)
+
      case('Acos2','Acos3','Acos4','Acos6','Acos8')
        select case(ae_shape1)
        case('Acos2'); npower = 2
@@ -175,7 +204,9 @@ subroutine init_ac_ms
            end do
        end do
        end do
-         
+        
+
+        
      case('none')
      case default
         call Err_finalize("Invalid pulse_shape_1 parameter!")
@@ -265,7 +296,33 @@ subroutine init_ac_ms
         call Err_finalize("Invalid pulse_shape_1 parameter!")
      end select
    case('oblique')
+     
+      
       select case(ae_shape1)
+      case("file")
+        ac_ms = 0d0
+        ac_new_ms = 0d0
+        if (comm_is_root(nproc_id_global)) then
+          fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
+          read(fh, *) nac0
+          do ii = 1, nac0
+            read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
+            do iy_m = ny1_m, ny2_m
+            do iz_m = nz1_m, nz2_m
+            ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
+            ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
+            ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
+            ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
+            ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
+            ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
+            end do
+            end do
+          end do
+          close(fh)
+          write(*, '(a, i6)') "# Read initial field:", nac0
+        end if
+        call comm_bcast(ac_ms,nproc_group_global)
+        call comm_bcast(ac_new_ms,nproc_group_global)
       case('Acos2','Acos3','Acos4','Acos6','Acos8')
         select case(ae_shape1)
         case('Acos2'); npower = 2
@@ -309,11 +366,13 @@ subroutine init_ac_ms
             end do
         end do
         end do
-          
+
       case('none')
       case default
          call Err_finalize("Invalid pulse_shape_1 parameter!")
       end select
+      
+
 
  ! case('2D', '2d', '3D', '3d')
  ! 
