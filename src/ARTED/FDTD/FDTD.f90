@@ -93,6 +93,7 @@ subroutine init_ac_ms
     cos_oblique = cos(theta_oblique_rad)
     sin_oblique = sin(theta_oblique_rad)
   endif
+  write(*,*) "CHK1"
 
   call comm_sync_all
 
