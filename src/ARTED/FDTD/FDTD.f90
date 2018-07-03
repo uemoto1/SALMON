@@ -282,6 +282,8 @@ WRITE(777,'(A)',ADVANCE='NO')'ae_shape1=';WRITE(777,*)ae_shape1,'';FLUSH(777)!ue
       case("file")
 WRITE(777,'(A)',ADVANCE='NO')'nproc_group_global=';WRITE(777,*)nproc_group_global,'';FLUSH(777)!uemoto!@w nproc_group_global
 WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:284 ';FLUSH(777)!uemoto!@c
+        ac_ms = 0d0
+        ac_new_ms = 0d0
         if (comm_is_root(nproc_id_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
@@ -299,8 +301,6 @@ WRITE(777,'(A)',ADVANCE='NO')'ix_m=';WRITE(777,*)ix_m,'';FLUSH(777)!uemoto!@w ix
             write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
           end do
         end if
-        ac_ms = 0d0
-        ac_new_ms = 0d0
         call comm_bcast(ac_ms,nproc_group_global)
         call comm_bcast(ac_new_ms,nproc_group_global)
       case('Acos2','Acos3','Acos4','Acos6','Acos8')
