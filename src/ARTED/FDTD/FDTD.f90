@@ -93,9 +93,11 @@ subroutine init_ac_ms
     cos_oblique = cos(theta_oblique_rad)
     sin_oblique = sin(theta_oblique_rad)
   endif
-  write(*,*) "CHK1"
+WRITE(777,'(A)',ADVANCE='NO')'theta_oblique_rad=';WRITE(777,*)theta_oblique_rad,'';FLUSH(777)!uemoto!@w theta_oblique_rad
+WRITE(777,'(A)',ADVANCE='NO')'theta_oblique_deg=';WRITE(777,*)theta_oblique_deg,'';FLUSH(777)!uemoto!@w theta_oblique_deg
 
   call comm_sync_all
+WRITE(777,'(A)',ADVANCE='NO')'FDTDdim=';WRITE(777,*)FDTDdim,'';FLUSH(777)!uemoto!@w FDTDdim
 
   select case(FDTDdim)
   case('1D','1d','2D','2d','3D','3d')
@@ -180,9 +182,6 @@ subroutine init_ac_ms
        end do
        end do
         
-        
-     case("file")
-
 
         
      case('none')
@@ -274,6 +273,7 @@ subroutine init_ac_ms
         call Err_finalize("Invalid pulse_shape_1 parameter!")
      end select
    case('oblique')
+WRITE(777,'(A)',ADVANCE='NO')'ae_shape1=';WRITE(777,*)ae_shape1,'';FLUSH(777)!uemoto!@w ae_shape1
      
        if (comm_is_root(nproc_group_global)) then
          write(*,*) "enter to oblique and ae_shape1", ae_shape1
