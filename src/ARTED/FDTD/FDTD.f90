@@ -98,6 +98,7 @@ WRITE(777,'(A)',ADVANCE='NO')'theta_oblique_deg=';WRITE(777,*)theta_oblique_deg,
 
   call comm_sync_all
 WRITE(777,'(A)',ADVANCE='NO')'FDTDdim=';WRITE(777,*)FDTDdim,'';FLUSH(777)!uemoto!@w FDTDdim
+!^
 
   select case(FDTDdim)
   case('1D','1d','2D','2d','3D','3d')
