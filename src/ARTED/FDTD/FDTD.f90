@@ -293,8 +293,7 @@ subroutine init_ac_ms
             end do
           end do
           write(*, '(a, i6)') "# Read initial field:", nac0
-          write(*, '(a, f12.5)') "# Maxval Ac_ms:", max(Ac_ms)
-          write(*, '(a, f12.5)') "# Minval Ac_ms:", min(Ac_ms)
+          write(*, '(a, f12.5)') "# Sum of Ac_ms:", sum(Ac_ms)
         end if
         call comm_bcast(ac_ms,nproc_group_global)
         call comm_bcast(ac_new_ms,nproc_group_global)
