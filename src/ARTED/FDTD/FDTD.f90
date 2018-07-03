@@ -292,6 +292,7 @@ subroutine init_ac_ms
             end do
             end do
           end do
+          close(fh)
           write(*, '(a, i6)') "# Read initial field:", nac0
           write(*, '(a, f12.5)') "# Sum of Ac_ms:", sum(Ac_ms)
         end if
