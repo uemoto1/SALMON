@@ -18,6 +18,7 @@
 subroutine write_excited_electron(iter)
   use Global_Variables
   use salmon_file
+  use salmon_parallel
   use salmon_communication
   implicit none
   integer iter, imacro, ix_m, iy_m, iz_m, fh
