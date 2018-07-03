@@ -61,7 +61,8 @@ subroutine init_ac_ms
   real(8) wpulse_1
   real(8) wpulse_2
   integer :: npower
-  integer :: fh, nac0, ii, ac_tmp(3), ac_new_tmp(3)
+  integer :: fh, nac0, ii
+  real(8) :: ac_tmp(3), ac_new_tmp(3)
 ! 2D parameter  
   ! real(8) angle,kabs,kx,ky
   ! real(8) length_y
