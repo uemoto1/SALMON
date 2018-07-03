@@ -277,12 +277,11 @@ WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:101 ';FLUSH(777)!uemoto!@c
 WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:277 ';FLUSH(777)!uemoto!@c
 WRITE(777,'(A)',ADVANCE='NO')'ae_shape1=';WRITE(777,*)ae_shape1,'';FLUSH(777)!uemoto!@w ae_shape1
      
-       if (comm_is_root(nproc_group_global)) then
-         write(*,*) "enter to oblique and ae_shape1", ae_shape1
-       endif
       
       select case(ae_shape1)
       case("file")
+WRITE(777,'(A)',ADVANCE='NO')'nproc_group_global=';WRITE(777,*)nproc_group_global,'';FLUSH(777)!uemoto!@w nproc_group_global
+WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:284 ';FLUSH(777)!uemoto!@c
         if (comm_is_root(nproc_group_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
