@@ -299,6 +299,8 @@ WRITE(777,'(A)',ADVANCE='NO')'ix_m=';WRITE(777,*)ix_m,'';FLUSH(777)!uemoto!@w ix
             write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
           end do
         end if
+        ac_ms = 0d0
+        ac_new_ms = 0d0
         call comm_bcast(ac_ms,nproc_group_global)
         call comm_bcast(ac_new_ms,nproc_group_global)
       case('Acos2','Acos3','Acos4','Acos6','Acos8')
