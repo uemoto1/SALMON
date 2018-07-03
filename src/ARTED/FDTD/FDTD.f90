@@ -312,26 +312,24 @@ subroutine init_ac_ms
             end do
         end do
         end do
-        
-        if (trim(ae_shape1) == "file") then
-          if (comm_is_root(nproc_group_global)) then
-            fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
-            read(fh, *) nac0
-            do ii = 1, nac0
-              read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
-              ac_ms(1, ix_m, :, :) = ac_tmp(1)
-              ac_ms(2, ix_m, :, :) = ac_tmp(2)
-              ac_ms(3, ix_m, :, :) = ac_tmp(3)
-              ac_new_ms(1, ix_m, :, :) = ac_new_tmp(1)
-              ac_new_ms(2, ix_m, :, :) = ac_new_tmp(2)
-              ac_new_ms(3, ix_m, :, :) = ac_new_tmp(3)
-              write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
-            end do
-          end if
-          call comm_bcast(ac_ms,nproc_group_global)
-          call comm_bcast(ac_new_ms,nproc_group_global)
+      case("file")
+        if (comm_is_root(nproc_group_global)) then
+          fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
+          read(fh, *) nac0
+          do ii = 1, nac0
+            read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
+            ac_ms(1, ix_m, :, :) = ac_tmp(1)
+            ac_ms(2, ix_m, :, :) = ac_tmp(2)
+            ac_ms(3, ix_m, :, :) = ac_tmp(3)
+            ac_new_ms(1, ix_m, :, :) = ac_new_tmp(1)
+            ac_new_ms(2, ix_m, :, :) = ac_new_tmp(2)
+            ac_new_ms(3, ix_m, :, :) = ac_new_tmp(3)
+            write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m)", ii, ix_m
+          end do
         end if
-  
+        call comm_bcast(ac_ms,nproc_group_global)
+        call comm_bcast(ac_new_ms,nproc_group_global)
+
       case('none')
       case default
          call Err_finalize("Invalid pulse_shape_1 parameter!")
