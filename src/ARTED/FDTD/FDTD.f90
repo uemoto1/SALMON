@@ -50,7 +50,7 @@ end subroutine init_ac_ms_2dc
 subroutine init_ac_ms
   use Global_variables
   use salmon_file, only: open_filehandle
-  use salmon_communication, only: comm_sync_all, comm_is_root
+  use salmon_communication, only: comm_sync_all, comm_is_root, comm_bcast
   use salmon_parallel, only: nproc_group_global
   implicit none
   ! real(8) x,y
