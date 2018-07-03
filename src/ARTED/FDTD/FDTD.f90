@@ -60,7 +60,7 @@ subroutine init_ac_ms
   real(8) wpulse_1
   real(8) wpulse_2
   integer :: npower
-  integer :: fh, ni, ii, ac_tmp(3), ac_new_tmp(3)
+  integer :: fh, nac0, ii, ac_tmp(3), ac_new_tmp(3)
 ! 2D parameter  
   ! real(8) angle,kabs,kx,ky
   ! real(8) length_y
@@ -315,8 +315,8 @@ subroutine init_ac_ms
         if (trim(ae_shape1) == "file") then
           if (comm_is_root(nproc_id_tdks)) then
             fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
-            read(fh, *) ni
-            do ii = 1, ni
+            read(fh, *) nac0
+            do ii = 1, nac0
               read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
               ac_ms(1, ix_m, :, :) = ac_tmp(1)
               ac_ms(2, ix_m, :, :) = ac_tmp(2)
@@ -324,7 +324,7 @@ subroutine init_ac_ms
               ac_new_ms(1, ix_m, :, :) = ac_new_tmp(1)
               ac_new_ms(2, ix_m, :, :) = ac_new_tmp(2)
               ac_new_ms(3, ix_m, :, :) = ac_new_tmp(3)
-              write(*, '(a, 1x, i6)') "# Loading", ix_m
+              write(*, '(a, 1x, i6, 1x, i6)') "# Loading (ii, ix_m):", ii, ix_m
             end do
           end if
           call comm_bcast(ac_ms,nproc_group_global)
