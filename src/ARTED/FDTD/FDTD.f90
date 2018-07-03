@@ -280,10 +280,8 @@ subroutine init_ac_ms
         if (comm_is_root(nproc_id_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
-          write(*,*) nac0, "#CHK1"
           do ii = 1, nac0
             read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
-            write(*,*) ix_m,  ac_tmp, ac_new_tmp, "#CHK2"
             do iy_m = ny1_m, ny2_m
             do iz_m = nz1_m, nz2_m
             ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
@@ -297,7 +295,6 @@ subroutine init_ac_ms
           end do
           close(fh)
           write(*, '(a, i6)') "# Read initial field:", nac0
-          write(*, '(a, f12.5)') "# Sum of Ac_ms:", sum(Ac_ms)
         end if
         call comm_bcast(ac_ms,nproc_group_global)
         call comm_bcast(ac_new_ms,nproc_group_global)
