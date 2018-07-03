@@ -1,12 +1,3 @@
-! example of logger subroutine in salmon !uemoto!
-subroutine salmon_open_logfile() !uemoto!
-use salmon_parallel, only: nproc_id_global !uemoto!
-implicit none !uemoto!
-character(100) :: logfile !uemoto!
-write(logfile,'(i3.3, ".log")') nproc_id_global !uemoto!
-open(unit=777, file=trim(logfile)) !uemoto!
-return !uemoto!
-end subroutine salmon_open_logfile !uemoto!
 program main
   use salmon_global
   use salmon_parallel
@@ -22,7 +13,6 @@ program main
   endif
 
   call read_input
-  call  salmon_open_logfile() !uemoto!
 
   select case(iperiodic)
   case(0)

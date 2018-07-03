@@ -93,12 +93,8 @@ subroutine init_ac_ms
     cos_oblique = cos(theta_oblique_rad)
     sin_oblique = sin(theta_oblique_rad)
   endif
-WRITE(777,'(A)',ADVANCE='NO')'theta_oblique_rad=';WRITE(777,*)theta_oblique_rad,'';FLUSH(777)!uemoto!@w theta_oblique_rad
-WRITE(777,'(A)',ADVANCE='NO')'theta_oblique_deg=';WRITE(777,*)theta_oblique_deg,'';FLUSH(777)!uemoto!@w theta_oblique_deg
 
   call comm_sync_all
-WRITE(777,'(A)',ADVANCE='NO')'FDTDdim=';WRITE(777,*)FDTDdim,'';FLUSH(777)!uemoto!@w FDTDdim
-WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:101 ';FLUSH(777)!uemoto!@c
 
   select case(FDTDdim)
   case('1D','1d','2D','2d','3D','3d')
@@ -274,24 +270,17 @@ WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:101 ';FLUSH(777)!uemoto!@c
         call Err_finalize("Invalid pulse_shape_1 parameter!")
      end select
    case('oblique')
-WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:277 ';FLUSH(777)!uemoto!@c
-WRITE(777,'(A)',ADVANCE='NO')'ae_shape1=';WRITE(777,*)ae_shape1,'';FLUSH(777)!uemoto!@w ae_shape1
      
       
       select case(ae_shape1)
       case("file")
-WRITE(777,'(A)',ADVANCE='NO')'nproc_group_global=';WRITE(777,*)nproc_group_global,'';FLUSH(777)!uemoto!@w nproc_group_global
-WRITE(777,'(A)')'@./ARTED/FDTD/FDTD.f90:284 ';FLUSH(777)!uemoto!@c
         ac_ms = 0d0
         ac_new_ms = 0d0
         if (comm_is_root(nproc_id_global)) then
           fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
           read(fh, *) nac0
-WRITE(777,'(A)',ADVANCE='NO')'nac0=';WRITE(777,*)nac0,'';FLUSH(777)!uemoto!@w nac0
           do ii = 1, nac0
             read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
-WRITE(777,'(A)',ADVANCE='NO')'ii=';WRITE(777,*)ii,'';FLUSH(777)!uemoto!@w ii
-WRITE(777,'(A)',ADVANCE='NO')'ix_m=';WRITE(777,*)ix_m,'';FLUSH(777)!uemoto!@w ix_m
             ac_ms(1, ix_m, :, :) = ac_tmp(1)
             ac_ms(2, ix_m, :, :) = ac_tmp(2)
             ac_ms(3, ix_m, :, :) = ac_tmp(3)
