@@ -286,6 +286,7 @@ subroutine init_ac_ms
             ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
             ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
             ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
+            write(*,*) ix_m,  ac_ms(1, ix_m, iy_m, iz_m), "#CHK"
             ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
             ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
             ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
