@@ -128,7 +128,7 @@ Subroutine init_Ac
   case('input')
     Ac_ext=0d0
     if(comm_is_root(nproc_id_global))then
-      open(899,file='input_Ac.dat')
+      open(899,file=(trim(directory) // 'input_Ac.dat'))
       do iter=0,Nt
         read(899,*)Ac_ext(iter,1),Ac_ext(iter,2),Ac_ext(iter,3)
       end do
