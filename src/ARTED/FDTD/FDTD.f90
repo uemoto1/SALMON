@@ -101,6 +101,31 @@ subroutine init_ac_ms
   case('1D','1d','2D','2d','3D','3d')
 !Pump
      select case(ae_shape1)
+     case("file")
+       ac_ms = 0d0
+       ac_new_ms = 0d0
+       if (comm_is_root(nproc_id_global)) then
+         fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
+         read(fh, *) nac0
+         do ii = 1, nac0
+           read(fh, *) ix_m, ac_tmp(1:3), ac_new_tmp(1:3)
+           do iy_m = ny1_m, ny2_m
+           do iz_m = nz1_m, nz2_m
+           ac_ms(1, ix_m, iy_m, iz_m) = ac_tmp(1)
+           ac_ms(2, ix_m, iy_m, iz_m) = ac_tmp(2)
+           ac_ms(3, ix_m, iy_m, iz_m) = ac_tmp(3)
+           ac_new_ms(1, ix_m, iy_m, iz_m) = ac_new_tmp(1)
+           ac_new_ms(2, ix_m, iy_m, iz_m) = ac_new_tmp(2)
+           ac_new_ms(3, ix_m, iy_m, iz_m) = ac_new_tmp(3)
+           end do
+           end do
+         end do
+         close(fh)
+         write(*, '(a, i6)') "# Read initial field:", nac0
+       end if
+       call comm_bcast(ac_ms,nproc_group_global)
+       call comm_bcast(ac_new_ms,nproc_group_global)
+
      case('Acos2','Acos3','Acos4','Acos6','Acos8')
        select case(ae_shape1)
        case('Acos2'); npower = 2
