@@ -20,7 +20,7 @@ Subroutine init_Ac
   use salmon_communication, only: comm_bcast, comm_is_root
   use Ac_alocal_laser
   implicit none
-  integer :: iter, npower
+  integer :: iter, npower, fh
   real(8) :: tt
 
   javt = 0d0
@@ -128,7 +128,7 @@ Subroutine init_Ac
   case('input')
     Ac_ext=0d0
     if(comm_is_root(nproc_id_global))then
-      open(899,file=(trim(directory) // 'input_Ac.dat'))
+      open(899,file='input_Ac.dat')
       do iter=0,Nt
         read(899,*)Ac_ext(iter,1),Ac_ext(iter,2),Ac_ext(iter,3)
       end do
@@ -147,6 +147,18 @@ Subroutine init_Ac
         Ac_ext(iter,:)=-Epdir_re1(:)*f0_1/omega1*cos(omega1*tt+phi_CEP1*2d0*pi)
       end if
     enddo
+    
+  case('file')
+    Ac_ext=0d0
+    if(comm_is_root(nproc_id_global))then
+      fh = open_filehandle(trim(directory) // trim(sysname) // "_ac0.txt")
+      do iter=0,Nt
+        read(fh, *) Ac_ext(iter, 1), Ac_ext(iter, 2), Ac_ext(iter, 3)
+        write(*, '(a, 1x, i6)') "# Loading", iter
+      end do
+      close(fh)
+    end if
+    call comm_bcast(Ac_ext,nproc_group_global)
   case('none')
     !there is no pump
   case default
