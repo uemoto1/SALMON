@@ -19,6 +19,15 @@
 module control_sc
   implicit none
 contains
+  ! example of logger subroutine in salmon !uemoto!
+subroutine salmon_open_logfile() !uemoto!
+use salmon_parallel, only: nproc_id_global !uemoto!
+implicit none !uemoto!
+character(100) :: logfile !uemoto!
+write(logfile,'(i3.3, ".log")') nproc_id_global !uemoto!
+open(unit=777, file=trim(logfile)) !uemoto!
+return !uemoto!
+end subroutine salmon_open_logfile !uemoto!
 subroutine tddft_sc
   use Global_Variables
   use timer
@@ -42,6 +51,7 @@ subroutine tddft_sc
 #ifdef ARTED_LBLK
   call opt_vars_init_t4ppt()
 #endif
+call  salmon_open_logfile() !uemoto!
 
 
 !reentrance
