@@ -56,7 +56,11 @@ Subroutine CG_ompk(iter_cg_max)
   thr_id=0
 
   call timer_begin(LOG_CG)
+  
+  call fapp_start("CG_ompk", 1, 1)
   call update_projector(kac)
+  call fapp_stop("CG_ompk", 1, 1)
+
 
   esp_var_l(:,:)=0.d0
 !$omp parallel private(thr_id)
@@ -64,6 +68,7 @@ Subroutine CG_ompk(iter_cg_max)
 !$omp do private(j,i,ix,iy,iz,kr,ib,ibt,s,xkHxk,xkTxk,iter,uk,gkgk,xkHpk,pkHpk,ev,cx,cp,zs)
   do ik=NK_s,NK_e
   do ib=1,NB
+    call fapp_start("CG_ompk", 2, 1)
     select case (skip_gsortho)
     case('n')
       do ibt=1,ib-1
@@ -75,10 +80,18 @@ Subroutine CG_ompk(iter_cg_max)
     case('y')
       xk_omp(1:NL,thr_id)=zu_GS(1:NL,ib,ik)
     end select
+    call fapp_stop("CG_ompk", 2, 1)
+
+    call fapp_start("CG_ompk", 3, 1)
     call hpsi_omp_KB_GS(ik,xk_omp(:,thr_id),txk_omp(:,thr_id),hxk_omp(:,thr_id))
+    call fapp_stop("CG_ompk", 3, 1)
+
+    call fapp_start("CG_ompk", 4, 1)
     xkHxk=sum(conjg(xk_omp(:,thr_id))*hxk_omp(:,thr_id))*Hxyz
     xkTxk=sum(conjg(xk_omp(:,thr_id))*txk_omp(:,thr_id))*Hxyz
+    call fapp_stop("CG_ompk", 4, 1)
 
+    call fapp_start("CG_ompk", 5, 1)
     do iter=1,iter_cg_max
       select case (skip_gsortho)
       case('n')
@@ -118,12 +131,15 @@ Subroutine CG_ompk(iter_cg_max)
       xkHxk=sum(conjg(xk_omp(:,thr_id))*hxk_omp(:,thr_id))*Hxyz
       xkTxk=sum(conjg(xk_omp(:,thr_id))*txk_omp(:,thr_id))*Hxyz
     enddo
+    call fapp_stop("CG_ompk", 5, 1)
 
+    call fapp_start("CG_ompk", 6, 1)
     s=1.0d0/sqrt(sum(abs(xk_omp(:,thr_id))**2)*Hxyz)
     zu_GS(1:NL,ib,ik)=xk_omp(1:NL,thr_id)*s
     call hpsi_omp_KB_GS(ik,zu_GS(:,ib,ik),ttpsi_omp(:,thr_id),htpsi_omp(:,thr_id))
     xkHxk=sum(conjg(zu_GS(1:NL,ib,ik))*htpsi_omp(:,thr_id))*Hxyz
     esp_var_l(ib,ik)=sqrt(sum(abs(htpsi_omp(:,thr_id)-xkHxk*zu_GS(1:NL,ib,ik))**2)*Hxyz)*occ(ib,ik)
+    call fapp_stop("CG_ompk", 6, 1)
   enddo
   enddo
 

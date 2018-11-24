@@ -58,19 +58,26 @@ subroutine hamiltonian(zu,flag_current)
     ik=ik_table(ikb)
     ib=ib_table(ikb)
 
+    call fapp_start("hamiltonian", 1, 1)
     call init(zhtpsi(:,4,tid),zu(:,ib,ik))
+    call fapp_stop("hamiltonian", 1, 1)
+    call fapp_start("hamiltonian", 2, 1)
     call hpsi_omp_KB_RT(ik,zhtpsi(:,4,tid),zhtpsi(:,1,tid))
     call hpsi_omp_KB_RT(ik,zhtpsi(:,1,tid),zhtpsi(:,2,tid))
     call hpsi_omp_KB_RT(ik,zhtpsi(:,2,tid),zhtpsi(:,3,tid))
     call hpsi_omp_KB_RT(ik,zhtpsi(:,3,tid),zhtpsi(:,4,tid))
+    call fapp_stop("hamiltonian", 2, 1)
+    call fapp_start("hamiltonian", 3, 1)
     call update(zfac,zhtpsi(:,:,tid),zu(:,ib,ik))
-
+    call fapp_stop("hamiltonian", 3, 1)
+    
 #ifdef ARTED_CURRENT_PREPROCESSING
     if(flag_current) call current_omp_KB_ST(ib,ik,zu(:,ib,ik))
 #endif
   end do
 !$omp end do
 !$omp end parallel
+
 
   call timer_end(LOG_HPSI)
 

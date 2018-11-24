@@ -114,6 +114,8 @@ contains
     real(8) :: k2,k2lap0_2
     real(8) :: nabt(12)
     integer :: tid
+  
+    call fapp_start("hpsi_omp_KB_base",1,1)
 
     NVTX_BEG('hpsi1()',3)
 
@@ -139,6 +141,9 @@ contains
     LOG_END(LOG_HPSI_PSEUDO)
 
     NVTX_END()
+  
+    call fapp_stop("hpsi_omp_KB_base",1,1)
+
 
   contains
     subroutine subtraction(Vloc,tpsi,htpsi,ttpsi)
@@ -149,6 +154,8 @@ contains
       complex(8), intent(out) :: ttpsi(0:PNLz-1,0:PNLy-1,0:PNLx-1)
       integer :: ix,iy,iz
 
+      call fapp_start("subtraction",1,1)
+
 !dir$ vector aligned
       do ix=0,NLx-1
       do iy=0,NLy-1
@@ -157,6 +164,9 @@ contains
       end do
       end do
       end do
+      
+      call fapp_stop("subtraction",1,1)
+
     end subroutine
 
     !Calculating nonlocal part
@@ -175,15 +185,21 @@ contains
 
       dpseudo = cmplx(0.d0)
 
+      call fapp_start("pseudo_pt", 1,1)
       ! gather (load) pseudo potential point
       do i=1,NPI
         spseudo(i) = tpsi(idx_proj(i))
       end do
+      call fapp_stop("pseudo_pt", 1,1)
+
+  
+
 
       do ia=1,NI
       do ip=1,nprojector(ia)
         i = idx_lma(ia) + ip
 
+        call fapp_start("pseudo_pt", 2,1)
         ! summarize vector
         uVpsi   = 0.d0
         ioffset = pseudo_start_idx(ia)
@@ -191,20 +207,27 @@ contains
           uVpsi = uVpsi + conjg(zproj(j,i)) * spseudo(ioffset+j)
         end do
         uVpsi = uVpsi * Hxyz * iuV(i)
+        call fapp_stop("pseudo_pt", 2,1)
 
+
+        call fapp_start("pseudo_pt", 3,1)
         ! apply vector
         ioffset = pseudo_start_idx(ia)
         do j=1,Mps(ia)
           dpseudo(ioffset+j) = dpseudo(ioffset+j) + zproj(j,i) * uVpsi
         end do
+        call fapp_stop("pseudo_pt", 3,1)
+
       end do
       end do
 
+      call fapp_start("pseudo_pt", 4,1)
       ! scatter (store) pseudo potential point
       do i=1,NPI
         htpsi(idx_proj(i)) = htpsi(idx_proj(i)) + dpseudo(i)
       end do
+      call fapp_stop("pseudo_pt", 4,1)
+
     end subroutine
   end subroutine
 end module
-

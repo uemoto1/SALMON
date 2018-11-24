@@ -480,6 +480,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
 
   if(GS_RT == calc_mode_gs)then
 
+call fapp_start("rho_j_tau",1,1)
     select case(Nd)
     case(4)
 
@@ -517,9 +518,13 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
     case default
       call err_finalize('Nd /= 4')
     end select
+call fapp_stop("rho_j_tau",1,1)
+
   
   else  if(GS_RT == calc_mode_rt)then
 
+    
+call fapp_start("rho_j_tau",2,1)
     select case(Nd)
     case(4)
 
@@ -557,6 +562,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
     case default
       call err_finalize('Nd /= 4')
     end select
+call fapp_stop("rho_j_tau",2,1)
+
 
   else
     call err_finalize('error in meta GGA')
@@ -567,6 +574,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   j_s_l(:,2) = j_s_l_omp(:,2,0)
   j_s_l(:,3) = j_s_l_omp(:,3,0)
 
+call fapp_start("rho_j_tau",3,1)
   do thr_id = 1, NUMBER_THREADS-1
 !$omp parallel do    
     do i=1,NL
@@ -576,12 +584,17 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       j_s_l(i,3) = j_s_l(i,3) + j_s_l_omp(i,3,thr_id)
     end do
   end do
+call fapp_stop("rho_j_tau",3,1)
 
+call fapp_start("rho_j_tau",4,1)
   call comm_summation(tau_s_l,tau_s,NL,nproc_group_tdks)
   call comm_summation(j_s_l,j_s,NL*3,nproc_group_tdks)
+call fapp_stop("rho_j_tau",4,1)
+
 
   if(flag_nlcc)tau_s = tau_s + 0.5d0*tau_nlcc
 
+call fapp_start("rho_j_tau",5,1)
   select case(Nd)
   case(4)
 !$omp parallel do  private(ss)  
@@ -619,9 +632,12 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   case default
     call err_finalize('Nd /= 4')
   end select
+  call fapp_stop("rho_j_tau",5,1)
+
 
 !sato
 ! Symmetry
+call fapp_start("rho_j_tau",6,1)
   select case(crystal_structure)
   case("diamond")
      if(Sym == 4)then
@@ -750,6 +766,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   case default
      if(Sym /= 1)call err_finalize('Bad crystal structure')
   end select
+call fapp_stop("rho_j_tau",6,1)
+
 !sato
 
   return

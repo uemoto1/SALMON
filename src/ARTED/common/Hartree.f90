@@ -28,12 +28,16 @@ Subroutine Hartree
 
 !$omp parallel 
 
+call fapp_start("Hartree", 1, 1)
 !$omp do private(i)
   do i=1,NL
     rho_3D(Lx(i),Ly(i),Lz(i))=rho(i)
   end do
 !$omp end do
+call fapp_stop("Hartree", 1, 1)
 
+
+call fapp_start("Hartree", 2, 1)
 !$omp do private(ix,iy,nz) collapse(3)
   do nz = -NLz/2,NLz-1-NLz/2
   do iy = 0,NLy-1
@@ -43,7 +47,9 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 2, 1)
 
+call fapp_start("Hartree", 3, 1)
 !$omp do private(ix,ny,nz) collapse(3)
   do nz = -NLz/2,NLz-1-NLz/2
   do ny = -NLy/2,NLy-1-NLy/2
@@ -53,7 +59,10 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 3, 1)
 
+
+call fapp_start("Hartree", 4, 1)
 !$omp do private(nx,ny,nz) collapse(3)
   do nz = -NLz/2,NLz-1-NLz/2
   do ny = -NLy/2,NLy-1-NLy/2
@@ -63,7 +72,10 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 4, 1)
 
+
+call fapp_start("Hartree", 5, 1)
 !$omp do private(nx,ny,nz,G2) collapse(3)
   do nz = -NLz/2,NLz-1-NLz/2
   do ny = -NLy/2,NLy-1-NLy/2
@@ -75,15 +87,21 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 5, 1)
+
 
   rhoe_G_3D(0,0,0)=0.d0
 
+  call fapp_start("Hartree", 6, 1)
 !$omp do private(n)
   do n=NG_s,NG_e
     rhoe_G(n)=rhoe_G_temp(n)
   end do
 !$omp end do
+call fapp_stop("Hartree", 6, 1)
 
+
+call fapp_start("Hartree", 7, 1)
 !$omp do private(nx,ny,iz) collapse(3)
   do iz = 0,NLz-1
   do ny = -NLy/2,NLy-1-NLy/2
@@ -93,7 +111,10 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 7, 1)
 
+
+call fapp_start("Hartree", 8, 1)
 !$omp do private(nx,iy,iz) collapse(3)
   do iz = 0,NLz-1
   do iy = 0,NLy-1
@@ -103,7 +124,10 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 8, 1)
 
+
+call fapp_start("Hartree", 9, 1)
 !$omp do private(ix,iy,iz) collapse(3)
   do iz = 0,NLz-1
   do iy = 0,NLy-1
@@ -113,12 +137,17 @@ Subroutine Hartree
   end do
   end do
 !$omp end do
+call fapp_stop("Hartree", 9, 1)
 
+
+call fapp_start("Hartree", 10, 1)
 !$omp do private(i)
   do i=1,NL
     Vh(i)=Vh_3D(Lx(i),Ly(i),Lz(i))
   end do
 !$omp end do
+call fapp_stop("Hartree", 10, 1)
+
 
 !$omp end parallel
 
@@ -127,4 +156,3 @@ Subroutine Hartree
   return
 End Subroutine Hartree
 !--------10--------20--------30--------40--------50--------60--------70--------80--------90--------100-------110-------120------130
-

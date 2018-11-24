@@ -38,6 +38,7 @@ Subroutine Gram_Schmidt_ompk
   complex(8) :: zov
 
   call timer_begin(LOG_GRAM_SCHMIDT)
+  call fapp_start("Gram_Schmidt_ompk", 1, 1)
 !$omp parallel do private(ib,ibt,zov,s)
   do ik=NK_s,NK_e
   do ib=1,NB
@@ -49,6 +50,7 @@ Subroutine Gram_Schmidt_ompk
     zu_GS(:,ib,ik)=zu_GS(:,ib,ik)/sqrt(s)
   enddo
   enddo
+  call fapp_stop("Gram_Schmidt_ompk", 1, 1)
   call timer_end(LOG_GRAM_SCHMIDT)
 
   return
@@ -137,5 +139,3 @@ Subroutine Gram_Schmidt_ompb
 
   return
 End Subroutine Gram_Schmidt_ompb
-
-

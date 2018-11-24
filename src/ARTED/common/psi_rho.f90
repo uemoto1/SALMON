@@ -107,7 +107,8 @@ contains
 
 #ifdef ARTED_REDUCE_FOR_MANYCORE
     zrhotmp(:,mytid)=0.d0
-
+  
+call fapp_start("reduce",1,1)
 !$omp do private(ik,ib,i) collapse(2)
     do ik=NK_s,NK_e
     do ib=1,NBoccmax
@@ -117,7 +118,9 @@ contains
     end do
     end do
 !$omp end do
+call fapp_stop("reduce",1,1)
 
+call fapp_start("reduce",2,1)
     i = ceiling_pow2(NUMBER_THREADS)/2
     do while(i > 0)
       if(mytid < i) then
@@ -126,6 +129,7 @@ contains
       i = i/2
 !$omp barrier
     end do
+call fapp_stop("reduce",2,1)
 #else
     mytid = 0
 
@@ -133,6 +137,7 @@ contains
     zrhotmp(:,mytid) = 0.d0
 !$omp end single
 
+call fapp_start("reduce",3,1)
     do ik=NK_s,NK_e
     do ib=1,NBoccmax
 !$omp do private(i)
@@ -142,6 +147,8 @@ contains
 !$omp end do
     end do
     end do
+call fapp_stop("reduce",4,1)
+
 #endif
   end subroutine
 
@@ -438,4 +445,3 @@ contains
     NVTX_END()
   end subroutine
 end subroutine psi_rho_impl
-
