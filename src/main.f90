@@ -26,7 +26,7 @@ program main
       case('n')
         call start_collection("all")
         call arted
-        call end_collection("all")
+        call stop_collection("all")
       case default
         stop 'invalid domain_parallel'
       end select
