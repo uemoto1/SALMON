@@ -24,9 +24,7 @@ program main
       case('y')
         call gceed
       case('n')
-        call start_collection("all")
         call arted
-        call stop_collection("all")
       case default
         stop 'invalid domain_parallel'
       end select

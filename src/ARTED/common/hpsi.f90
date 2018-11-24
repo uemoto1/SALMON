@@ -173,6 +173,8 @@ contains
       integer    :: ia,i,j,ip,ioffset
       complex(8) :: uVpsi
 
+      call start_collection("pseudo_pt")
+
       dpseudo = cmplx(0.d0)
 
       ! gather (load) pseudo potential point
@@ -204,7 +206,9 @@ contains
       do i=1,NPI
         htpsi(idx_proj(i)) = htpsi(idx_proj(i)) + dpseudo(i)
       end do
+      
+      call stop_collection("pseudo_pt")
+      
     end subroutine
   end subroutine
 end module
-
