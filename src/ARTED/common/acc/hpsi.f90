@@ -75,6 +75,8 @@ contains
 #else
 !$acc& pcopyin(zJxyz) &
 #endif
+
+call start_collection("hpsi_acc_KB_RT_LBLK_1")
 !$acc& pcopyin(t4ppt_ilma,t4ppt_j,t4ppt_nlma,t4ppt_vi2i)
 !$acc loop gang vector(1)
     do ikb = ikb_s, ikb_e
@@ -91,7 +93,9 @@ contains
         uVpsi(ilma,ikb)=uVpsi0*Hxyz*iuV(ilma)
       enddo
     enddo
+call stop_collection("hpsi_acc_KB_RT_LBLK_1")
 
+call start_collection("hpsi_acc_KB_RT_LBLK_2")
 !$acc loop gang vector(1)
     do ikb = ikb_s, ikb_e
 !$acc loop independent gang vector(128)
@@ -112,6 +116,8 @@ contains
       enddo
     enddo
 !$acc end kernels
+call stop_collection("hpsi_acc_KB_RT_LBLK_2")
+
 
   end subroutine
 

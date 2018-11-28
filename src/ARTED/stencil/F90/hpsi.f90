@@ -78,7 +78,7 @@ subroutine hpsi1_RT_stencil(A,B,C,D,E,F)
 # define IDZ(dt) modz(iz+(dt)+NLz),iy,ix
 #endif
 
-
+call start_collection("hpsi1_RT_stencil")
 #ifdef ARTED_STENCIL_ENABLE_LOOP_BLOCKING
   do bx=0,NLx-1,LBX
   do by=0,NLy-1,LBY
@@ -194,5 +194,6 @@ subroutine hpsi1_RT_stencil(A,B,C,D,E,F)
 #ifdef ARTED_STENCIL_ENABLE_LOOP_BLOCKING
   end do
   end do
+  call stop_collection("hpsi1_RT_stencil")
 #endif
 end subroutine

@@ -520,6 +520,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   
   else  if(GS_RT == calc_mode_rt)then
 
+call start_collection("rho_j_tau_1")
+
     select case(Nd)
     case(4)
 
@@ -557,6 +559,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
     case default
       call err_finalize('Nd /= 4')
     end select
+    
+call stop_collection("rho_j_tau_1")
 
   else
     call err_finalize('error in meta GGA')
@@ -577,11 +581,13 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
     end do
   end do
 
+
   call comm_summation(tau_s_l,tau_s,NL,nproc_group_tdks)
   call comm_summation(j_s_l,j_s,NL*3,nproc_group_tdks)
 
   if(flag_nlcc)tau_s = tau_s + 0.5d0*tau_nlcc
 
+  call start_collection("rho_j_tau_2")
   select case(Nd)
   case(4)
 !$omp parallel do  private(ss)  
@@ -619,6 +625,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   case default
     call err_finalize('Nd /= 4')
   end select
+  call stop_collection("rho_j_tau_2")
+
 
 !sato
 ! Symmetry

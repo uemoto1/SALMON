@@ -107,7 +107,7 @@ contains
 
 #ifdef ARTED_REDUCE_FOR_MANYCORE
     zrhotmp(:,mytid)=0.d0
-
+call start_collection("reduce1")
 !$omp do private(ik,ib,i) collapse(2)
     do ik=NK_s,NK_e
     do ib=1,NBoccmax
@@ -117,6 +117,8 @@ contains
     end do
     end do
 !$omp end do
+call stop_collection("reduce1")
+
 
     i = ceiling_pow2(NUMBER_THREADS)/2
     do while(i > 0)
@@ -133,6 +135,7 @@ contains
     zrhotmp(:,mytid) = 0.d0
 !$omp end single
 
+call start_collection("reduce2")
     do ik=NK_s,NK_e
     do ib=1,NBoccmax
 !$omp do private(i)
@@ -142,6 +145,7 @@ contains
 !$omp end do
     end do
     end do
+    call stop_collection("reduce2")
 #endif
   end subroutine
 
@@ -438,4 +442,3 @@ contains
     NVTX_END()
   end subroutine
 end subroutine psi_rho_impl
-
