@@ -194,6 +194,6 @@ call start_collection("hpsi1_RT_stencil")
 #ifdef ARTED_STENCIL_ENABLE_LOOP_BLOCKING
   end do
   end do
-  call stop_collection("hpsi1_RT_stencil")
 #endif
+call stop_collection("hpsi1_RT_stencil")
 end subroutine
