@@ -468,6 +468,10 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   real(8) :: tau_s_l(NL),j_s_l(NL,3),ss(3)
   complex(8) :: zs(3)
   integer :: thr_id,omp_get_thread_num
+  
+  ! Experiments on PK11
+  complex(8) :: j_s_l_omp2(1:3,1:NL,0:NUMBER_THREADS-1)
+  
 
 !$acc update self(zu) if_present
 
@@ -477,6 +481,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
 
   tau_s_l_omp=0d0
   j_s_l_omp=0d0
+  j_s_l_omp2=0d0
 
   if(GS_RT == calc_mode_gs)then
 
@@ -507,9 +512,10 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
             &  +zI*kAc0(ik,3)*zu_GS(i,ib,ik)   
           tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
             &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
 !$omp end parallel
@@ -549,9 +555,10 @@ call start_collection("rho_j_tau_1")
             &  +zI*kAc0(ik,3)*zu(i,ib,ik)
           tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
             &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1,i,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
 !$omp end parallel
@@ -567,17 +574,25 @@ call stop_collection("rho_j_tau_1")
   end if
 
   tau_s_l(:) = tau_s_l_omp(:,0)
-  j_s_l(:,1) = j_s_l_omp(:,1,0)
-  j_s_l(:,2) = j_s_l_omp(:,2,0)
-  j_s_l(:,3) = j_s_l_omp(:,3,0)
+  ! j_s_l(:,1) = j_s_l_omp(:,1,0)
+  ! j_s_l(:,2) = j_s_l_omp(:,2,0)
+  ! j_s_l(:,3) = j_s_l_omp(:,3,0)
+  j_s_l(:,1) = j_s_l_omp2(1,:,0)
+  j_s_l(:,2) = j_s_l_omp2(2,:,0)
+  j_s_l(:,3) = j_s_l_omp2(3,:,0)
+
+  
 
   do thr_id = 1, NUMBER_THREADS-1
 !$omp parallel do    
     do i=1,NL
       tau_s_l(i) = tau_s_l(i) + tau_s_l_omp(i,thr_id)
-      j_s_l(i,1) = j_s_l(i,1) + j_s_l_omp(i,1,thr_id)
-      j_s_l(i,2) = j_s_l(i,2) + j_s_l_omp(i,2,thr_id)
-      j_s_l(i,3) = j_s_l(i,3) + j_s_l_omp(i,3,thr_id)
+      j_s_l(i,1) = j_s_l(i,1) + j_s_l_omp2(1,i,thr_id)
+      j_s_l(i,2) = j_s_l(i,2) + j_s_l_omp2(2,i,thr_id)
+      j_s_l(i,3) = j_s_l(i,3) + j_s_l_omp2(3,i,thr_id)
+      ! j_s_l(i,1) = j_s_l(i,1) + j_s_l_omp(i,1,thr_id)
+      ! j_s_l(i,2) = j_s_l(i,2) + j_s_l_omp(i,2,thr_id)
+      ! j_s_l(i,3) = j_s_l(i,3) + j_s_l_omp(i,3,thr_id)
     end do
   end do
 
