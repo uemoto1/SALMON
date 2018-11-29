@@ -497,7 +497,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          !call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
           j_s_l_omp2(1:3,1:NL,thr_id) = 0d0
           tau_s_l_omp(1:NL,thr_id) = 0d0
 
@@ -805,6 +805,7 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
+  return
   
   zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
   ! Periodic Boundary Condition:
