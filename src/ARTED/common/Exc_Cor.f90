@@ -498,7 +498,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
           call experimental_kernel(&
-            & reshape(zu_GS(:,ib,ik), (/NLz, NLy, NLx/)), &
+            & zu_GS(1:NL,ib,ik), &
             & kAc0(ik,1:3), occ(ik, ib), &
             & j_s_l_omp2(1:3,1:NL,thr_id), &
             & tau_s_l_omp(1:NL,thr_id))
@@ -802,12 +802,10 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj1d, tau1d)
   complex(8), intent(in) :: zu1d(1:NL)
   real(8), intent(in) :: kAc0t(3)
   real(8), intent(in) :: occ_ik_ib
-  real(8), intent(inout) :: rj1d(1:3, 1:NL)
-  real(8), intent(inout) :: tau1d(1:NL)
+  real(8), intent(inout) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
+  real(8), intent(inout) :: tau3d(1:NLz, 1:NLy, 1:NLx)
   
   complex(8) :: zu3d(1:NLz, 1:NLy, 1:NLx)
-  real(8) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
-  real(8) :: tau3d(1:NLz, 1:NLy, 1:NLx)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
@@ -843,8 +841,10 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj1d, tau1d)
                       +nabx(4) * zu3d(modz(NLz+iz+4), iy, ix) &
                       -nabx(4) * zu3d(modz(NLz+iz-4), iy, ix) &
                       +zI * kAc0t(3) * zu3d(iz, iy, ix)
-        rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
-        tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
+        rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
+          & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
+        tau3d(iz, iy, ix) =  tau3d(iz, iy, ix) &
+          & + sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
       end do
     end do
   end do
