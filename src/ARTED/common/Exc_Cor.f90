@@ -497,7 +497,12 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          call experimental_kernel(&
+            & reshape(zu_GS(:,ib,ik), (/NLz, NLy, NLx/)), &
+            & kAc0(ik,1:3), occ(ik, ib), &
+            & j_s_l_omp2(1:3,1:NL,thr_id), &
+            & tau_s_l_omp(1:NL,thr_id))
+          
           j_s_l_omp2(1:3,1:NL,thr_id) = 0d0
           tau_s_l_omp(1:NL,thr_id) = 0d0
 
@@ -790,8 +795,9 @@ call stop_collection("rho_j_tau_1")
   return
 End Subroutine rho_j_tau
 
-subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
+subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj1d, tau1d)
   use Global_Variables
+  use opt_variables, only: modx, mody, modz
   implicit none
   complex(8), intent(in) :: zu1d(1:NL)
   real(8), intent(in) :: kAc0t(3)
@@ -799,56 +805,43 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   real(8), intent(inout) :: rj1d(1:3, 1:NL)
   real(8), intent(inout) :: tau1d(1:NL)
   
-  complex(8) :: zu3d(-3:NLz+4, -3:NLy+4, -3:NLz+4)
+  complex(8) :: zu3d(1:NLz, 1:NLy, 1:NLx)
   real(8) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
   real(8) :: tau3d(1:NLz, 1:NLy, 1:NLx)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
   zu3d = 0d0; rj3d = 0d0; tau3d = 0d0;
-  zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
-
-  ! Periodic Boundary Condition:
-  ! (Lower Bound)
-  zu3d(-3:0, :, :) = zu3d(NLz-3:NLz, :, :)
-  zu3d(:, -3:0, :) = zu3d(:, NLy-3:NLy, :)
-  zu3d(:, :, -3:0) = zu3d(:, :, NLx-3:NLx)
-  ! (Upper Bound)
-  zu3d(NLz+1:NLz+4, :, :) = zu3d(1:4, :, :)
-  zu3d(:, NLy+1:NLy+4, :) = zu3d(:, 1:4, :)
-  zu3d(:, :, NLx+1:NLx+4) = zu3d(:, :, 1:4)
-
-  return
 
   do ix = 1, NLx
     do iy = 1, NLy
       do iz = 1, NLz
-        grad_tmp(1) = +nabx(1) * zu3d(iz, iy, ix+1) &
-                      -nabx(1) * zu3d(iz, iy, ix-1) &
-                      +nabx(2) * zu3d(iz, iy, ix+2) &
-                      -nabx(2) * zu3d(iz, iy, ix-2) &
-                      +nabx(3) * zu3d(iz, iy, ix+3) &
-                      -nabx(3) * zu3d(iz, iy, ix-3) &
-                      +nabx(4) * zu3d(iz, iy, ix+4) &
-                      -nabx(4) * zu3d(iz, iy, ix-4) &
+        grad_tmp(1) = +nabx(1) * zu3d(iz, iy, modx(NLx+ix+1)) &
+                      -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1)) &
+                      +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2)) &
+                      -nabx(2) * zu3d(iz, iy, modx(NLx+ix-2)) &
+                      +nabx(3) * zu3d(iz, iy, modx(NLx+ix+3)) &
+                      -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3)) &
+                      +nabx(4) * zu3d(iz, iy, modx(NLx+ix+4)) &
+                      -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4)) &
                       +zI * kAc0t(1) * zu3d(iz, iy, ix)
-        grad_tmp(2) = +nabx(1) * zu3d(iz, iy+1, ix) &
-                      -nabx(1) * zu3d(iz, iy-1, ix) &
-                      +nabx(2) * zu3d(iz, iy+2, ix) &
-                      -nabx(2) * zu3d(iz, iy-2, ix) &
-                      +nabx(3) * zu3d(iz, iy+3, ix) &
-                      -nabx(3) * zu3d(iz, iy-3, ix) &
-                      +nabx(4) * zu3d(iz, iy+4, ix) &
-                      -nabx(4) * zu3d(iz, iy-4, ix) &
+        grad_tmp(2) = +nabx(1) * zu3d(iz, mody(NLy+iy+1), ix) &
+                      -nabx(1) * zu3d(iz, mody(NLy+iy-1), ix) &
+                      +nabx(2) * zu3d(iz, mody(NLy+iy+2), ix) &
+                      -nabx(2) * zu3d(iz, mody(NLy+iy-2), ix) &
+                      +nabx(3) * zu3d(iz, mody(NLy+iy+3), ix) &
+                      -nabx(3) * zu3d(iz, mody(NLy+iy-3), ix) &
+                      +nabx(4) * zu3d(iz, mody(NLy+iy+4), ix) &
+                      -nabx(4) * zu3d(iz, mody(NLy+iy-4), ix) &
                       +zI * kAc0t(2) * zu3d(iz, iy, ix)
-        grad_tmp(1) = +nabx(1) * zu3d(iz+1, iy, ix) &
-                      -nabx(1) * zu3d(iz-1, iy, ix) &
-                      +nabx(2) * zu3d(iz+2, iy, ix) &
-                      -nabx(2) * zu3d(iz-2, iy, ix) &
-                      +nabx(3) * zu3d(iz+3, iy, ix) &
-                      -nabx(3) * zu3d(iz-3, iy, ix) &
-                      +nabx(4) * zu3d(iz+4, iy, ix) &
-                      -nabx(4) * zu3d(iz-4, iy, ix) &
+        grad_tmp(1) = +nabx(1) * zu3d(modz(NLz+iz+1), iy, ix) &
+                      -nabx(1) * zu3d(modz(NLz+iz-1), iy, ix) &
+                      +nabx(2) * zu3d(modz(NLz+iz+2), iy, ix) &
+                      -nabx(2) * zu3d(modz(NLz+iz-2), iy, ix) &
+                      +nabx(3) * zu3d(modz(NLz+iz+3), iy, ix) &
+                      -nabx(3) * zu3d(modz(NLz+iz-3), iy, ix) &
+                      +nabx(4) * zu3d(modz(NLz+iz+4), iy, ix) &
+                      -nabx(4) * zu3d(modz(NLz+iz-4), iy, ix) &
                       +zI * kAc0t(3) * zu3d(iz, iy, ix)
         rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
         tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
