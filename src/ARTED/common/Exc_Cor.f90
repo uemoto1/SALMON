@@ -795,17 +795,16 @@ call stop_collection("rho_j_tau_1")
   return
 End Subroutine rho_j_tau
 
-subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj1d, tau1d)
+subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
   use Global_Variables
   use opt_variables, only: modx, mody, modz
   implicit none
-  complex(8), intent(in) :: zu1d(1:NL)
+  complex(8), intent(in) :: zu3d(1:NLz, 1:NLy, 1:NLx)
   real(8), intent(in) :: kAc0t(3)
   real(8), intent(in) :: occ_ik_ib
   real(8), intent(inout) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
   real(8), intent(inout) :: tau3d(1:NLz, 1:NLy, 1:NLx)
   
-  complex(8) :: zu3d(1:NLz, 1:NLy, 1:NLx)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
