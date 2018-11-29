@@ -831,7 +831,8 @@ contains
     end do
     rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
     tau3d(1:NL) = tau3d(1:NL) + reshape(tau3d, (/NL/))
-  end subroutine 
+    return
+  end subroutine experimental_kernel
 End Subroutine rho_j_tau
 
 end subroutine Exc_Cor
