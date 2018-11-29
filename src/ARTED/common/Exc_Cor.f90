@@ -538,27 +538,28 @@ call start_collection("rho_j_tau_1")
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          zs(1)=nabx(1)*(zu(ifdx(1,i),ib,ik)-zu(ifdx(-1,i),ib,ik))&
-            &  +nabx(2)*(zu(ifdx(2,i),ib,ik)-zu(ifdx(-2,i),ib,ik))&
-            &  +nabx(3)*(zu(ifdx(3,i),ib,ik)-zu(ifdx(-3,i),ib,ik))&
-            &  +nabx(4)*(zu(ifdx(4,i),ib,ik)-zu(ifdx(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,1)*zu(i,ib,ik)
-          zs(2)=naby(1)*(zu(ifdy(1,i),ib,ik)-zu(ifdy(-1,i),ib,ik))&
-            &  +naby(2)*(zu(ifdy(2,i),ib,ik)-zu(ifdy(-2,i),ib,ik))&
-            &  +naby(3)*(zu(ifdy(3,i),ib,ik)-zu(ifdy(-3,i),ib,ik))&
-            &  +naby(4)*(zu(ifdy(4,i),ib,ik)-zu(ifdy(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,2)*zu(i,ib,ik)
-          zs(3)=nabz(1)*(zu(ifdz(1,i),ib,ik)-zu(ifdz(-1,i),ib,ik))&
-            &  +nabz(2)*(zu(ifdz(2,i),ib,ik)-zu(ifdz(-2,i),ib,ik))&
-            &  +nabz(3)*(zu(ifdz(3,i),ib,ik)-zu(ifdz(-3,i),ib,ik))&
-            &  +nabz(4)*(zu(ifdz(4,i),ib,ik)-zu(ifdz(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,3)*zu(i,ib,ik)
-          tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
-            &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
+          call experimental_kernel(zu(:,ib,ik), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          ! zs(1)=nabx(1)*(zu(ifdx(1,i),ib,ik)-zu(ifdx(-1,i),ib,ik))&
+          !   &  +nabx(2)*(zu(ifdx(2,i),ib,ik)-zu(ifdx(-2,i),ib,ik))&
+          !   &  +nabx(3)*(zu(ifdx(3,i),ib,ik)-zu(ifdx(-3,i),ib,ik))&
+          !   &  +nabx(4)*(zu(ifdx(4,i),ib,ik)-zu(ifdx(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,1)*zu(i,ib,ik)
+          ! zs(2)=naby(1)*(zu(ifdy(1,i),ib,ik)-zu(ifdy(-1,i),ib,ik))&
+          !   &  +naby(2)*(zu(ifdy(2,i),ib,ik)-zu(ifdy(-2,i),ib,ik))&
+          !   &  +naby(3)*(zu(ifdy(3,i),ib,ik)-zu(ifdy(-3,i),ib,ik))&
+          !   &  +naby(4)*(zu(ifdy(4,i),ib,ik)-zu(ifdy(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,2)*zu(i,ib,ik)
+          ! zs(3)=nabz(1)*(zu(ifdz(1,i),ib,ik)-zu(ifdz(-1,i),ib,ik))&
+          !   &  +nabz(2)*(zu(ifdz(2,i),ib,ik)-zu(ifdz(-2,i),ib,ik))&
+          !   &  +nabz(3)*(zu(ifdz(3,i),ib,ik)-zu(ifdz(-3,i),ib,ik))&
+          !   &  +nabz(4)*(zu(ifdz(4,i),ib,ik)-zu(ifdz(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,3)*zu(i,ib,ik)
+          ! tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
+          !   &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
           ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
           ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
           ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
 !$omp end parallel
@@ -776,6 +777,59 @@ call stop_collection("rho_j_tau_1")
 !sato
 
   return
+contains
+  
+  subroutine experimental_kernel(zu1d, occ_ik_ib, rj1d, tau1d)
+    implicit none
+    complex(8), intent(in) :: zu1d(1:NL)
+    real(8), intent(in) :: occ_ik_ib
+    real(8), intent(inout) :: rj1d(1:3, 1:NL)
+    real(8), intent(inout) :: tau1d(1:NL)
+    complex(8) :: zu3d(-3:NLz+4, -3:NLy+4, -3:NLz+4)
+    real(8) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
+    real(8) :: tau3d(1:NLz, 1:NLy, 1:NLx)
+    complex(8) :: grad_tmp(1:3)
+    
+    zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
+
+    do ix = 1, NLx
+      do iy = 1, NLy
+        do iz = 1, NLz
+          grad_tmp(1) = +nabx(1) * zu3d(iz, iy, ix+1) &
+                        -nabx(1) * zu3d(iz, iy, ix-1) &
+                        +nabx(2) * zu3d(iz, iy, ix+2) &
+                        -nabx(2) * zu3d(iz, iy, ix-2) &
+                        +nabx(3) * zu3d(iz, iy, ix+3) &
+                        -nabx(3) * zu3d(iz, iy, ix-3) &
+                        +nabx(4) * zu3d(iz, iy, ix+4) &
+                        -nabx(4) * zu3d(iz, iy, ix-4) &
+                        +zI * kAc(1) * zu3d(iz, iy, ix)
+          grad_tmp(2) = +nabx(1) * zu3d(iz, iy+1, ix) &
+                        -nabx(1) * zu3d(iz, iy-1, ix) &
+                        +nabx(2) * zu3d(iz, iy+2, ix) &
+                        -nabx(2) * zu3d(iz, iy-2, ix) &
+                        +nabx(3) * zu3d(iz, iy+3, ix) &
+                        -nabx(3) * zu3d(iz, iy-3, ix) &
+                        +nabx(4) * zu3d(iz, iy+4, ix) &
+                        -nabx(4) * zu3d(iz, iy-4, ix) &
+                        +zI * kAc(2) * zu3d(iz, iy, ix)
+          grad_tmp(1) = +nabx(1) * zu3d(iz+1, iy, ix) &
+                        -nabx(1) * zu3d(iz-1, iy, ix) &
+                        +nabx(2) * zu3d(iz+2, iy, ix) &
+                        -nabx(2) * zu3d(iz-2, iy, ix) &
+                        +nabx(3) * zu3d(iz+3, iy, ix) &
+                        -nabx(3) * zu3d(iz-3, iy, ix) &
+                        +nabx(4) * zu3d(iz+4, iy, ix) &
+                        -nabx(4) * zu3d(iz-4, iy, ix) &
+                        +zI * kAc(3) * zu3d(iz, iy, ix)
+          rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ib_ik*0.5d0)
+          tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ib_ik*0.5d0)
+        end do
+      end do
+    end do
+    rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
+    tau3d(1:NL) = tau3d(1:NL) + reshape(tau3d, (/NL/))
+  end subroutine 
 End Subroutine rho_j_tau
 
 end subroutine Exc_Cor
