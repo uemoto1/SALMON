@@ -806,13 +806,11 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   ! (Lower Bound)
   zu3d(-3:0, :, :) = zu3d(NLz-3:NLz, :, :)
   zu3d(:, -3:0, :) = zu3d(:, NLy-3:NLy, :)
-  zu3d(:, :, -3:0) = zu3d(:, :, NLz-3:NLz)
+  zu3d(:, :, -3:0) = zu3d(:, :, NLx-3:NLx)
   ! (Upper Bound)
   zu3d(NLz+1:NLz+4, :, :) = zu3d(1:4, :, :)
-  zu3d(:, NLz+1:NLz+4, :) = zu3d(:, 1:4, :)
-  zu3d(:, :, NLz+1:NLz+4) = zu3d(:, :, 1:4)
-
-  return
+  zu3d(:, NLy+1:NLy+4, :) = zu3d(:, 1:4, :)
+  zu3d(:, :, NLx+1:NLx+4) = zu3d(:, :, 1:4)
 
   do ix = 1, NLx
     do iy = 1, NLy
@@ -844,13 +842,13 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
                       +nabx(4) * zu3d(iz+4, iy, ix) &
                       -nabx(4) * zu3d(iz-4, iy, ix) &
                       +zI * kAc0t(3) * zu3d(iz, iy, ix)
-        rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
-        tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
+        ! rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
+        ! tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
       end do
     end do
   end do
-  rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
-  tau1d(1:NL) = tau1d(1:NL) + reshape(tau3d, (/NL/))
+  ! rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
+  ! tau1d(1:NL) = tau1d(1:NL) + reshape(tau3d, (/NL/))
   return
 end subroutine experimental_kernel
 
