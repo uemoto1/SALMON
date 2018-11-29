@@ -483,12 +483,12 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   ! j_s_l_omp=0d0
   j_s_l_omp2=0d0
   
-  write(*,*) "Entrance"
 
   if(GS_RT == calc_mode_gs)then
 
     select case(Nd)
     case(4)
+      write(*,*) "GS Entrance"
 
       thr_id=0
 !$omp parallel private(thr_id)
@@ -529,6 +529,9 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
     case default
       call err_finalize('Nd /= 4')
     end select
+
+    write(*,*) "GS END"
+
   
   else  if(GS_RT == calc_mode_rt)then
 
