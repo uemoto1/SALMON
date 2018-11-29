@@ -785,9 +785,11 @@ contains
     real(8), intent(in) :: occ_ik_ib
     real(8), intent(inout) :: rj1d(1:3, 1:NL)
     real(8), intent(inout) :: tau1d(1:NL)
+    
     complex(8) :: zu3d(-3:NLz+4, -3:NLy+4, -3:NLz+4)
     real(8) :: rj3d(1:3, 1:NLz, 1:NLy, 1:NLx)
     real(8) :: tau3d(1:NLz, 1:NLy, 1:NLx)
+    integer :: ix, iy, iz
     complex(8) :: grad_tmp(1:3)
     
     zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
