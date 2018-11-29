@@ -496,13 +496,14 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
 !$omp do private(ik,ib,zs,i)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
-        do i=1,NL
-          call experimental_kernel( &
-            & zu_GS(1:NL,ib,ik), &
-            & kAc0(ik,1:3), occ(ik, ib), &
-            & j_s_l_omp2(1:3,1:NL,thr_id), &
-            & tau_s_l_omp(1:NL,thr_id) &
-            & )
+        call experimental_kernel( &
+          & zu_GS(1:NL,ib,ik), &
+          & kAc0(ik,1:3), occ(ik, ib), &
+          & j_s_l_omp2(1:3,1:NL,thr_id), &
+          & tau_s_l_omp(1:NL,thr_id) &
+          & )
+
+        ! do i=1,NL
 
           ! zs(1)=nabx(1)*(zu_GS(ifdx(1,i),ib,ik)-zu_GS(ifdx(-1,i),ib,ik))&
           !   &  +nabx(2)*(zu_GS(ifdx(2,i),ib,ik)-zu_GS(ifdx(-2,i),ib,ik))&
@@ -525,7 +526,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
           ! ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
           ! ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
           ! j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
-        enddo
+        ! enddo
       end do
 !$omp end parallel
 
@@ -549,13 +550,14 @@ call start_collection("rho_j_tau_1")
 !$omp do private(ik,ib,zs,i)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
-        do i=1,NL
-          call experimental_kernel( &
-            & zu(1:NL,ib,ik), &
-            & kAc0(ik,1:3), occ(ik, ib), &
-            & j_s_l_omp2(1:3,1:NL,thr_id), &
-            & tau_s_l_omp(1:NL,thr_id) &
-            & )
+        call experimental_kernel( &
+          & zu(1:NL,ib,ik), &
+          & kAc0(ik,1:3), occ(ik, ib), &
+          & j_s_l_omp2(1:3,1:NL,thr_id), &
+          & tau_s_l_omp(1:NL,thr_id) &
+          & )
+          
+        ! do i=1,NL
           ! zs(1)=nabx(1)*(zu(ifdx(1,i),ib,ik)-zu(ifdx(-1,i),ib,ik))&
           !   &  +nabx(2)*(zu(ifdx(2,i),ib,ik)-zu(ifdx(-2,i),ib,ik))&
           !   &  +nabx(3)*(zu(ifdx(3,i),ib,ik)-zu(ifdx(-3,i),ib,ik))&
@@ -577,7 +579,7 @@ call start_collection("rho_j_tau_1")
           ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
           ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
           ! j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
-        enddo
+        ! enddo
       end do
 !$omp end parallel
 
