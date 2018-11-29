@@ -816,6 +816,7 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3)) &
                       -nabx(2) * zu3d(iz, iy, modx(NLx+ix-2)) &
                       -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1)) &
+                      +zI * rvec_kac(1) * zu3d(iz, iy, ix) &
                       +nabx(1) * zu3d(iz, iy, modx(NLx+ix+1)) &
                       +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2)) &
                       +nabx(3) * zu3d(iz, iy, modx(NLx+ix+3)) &
@@ -824,6 +825,7 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       -naby(3) * zu3d(iz, mody(NLy+iy-3), ix) &
                       -naby(2) * zu3d(iz, mody(NLy+iy-2), ix) &
                       -naby(1) * zu3d(iz, mody(NLy+iy-1), ix) &
+                      +zI * rvec_kac(2) * zu3d(iz, iy, ix) &
                       +naby(1) * zu3d(iz, mody(NLy+iy+1), ix) &
                       +naby(2) * zu3d(iz, mody(NLy+iy+2), ix) &
                       +naby(3) * zu3d(iz, mody(NLy+iy+3), ix) &
@@ -832,11 +834,11 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       -nabz(3) * zu3d(modz(NLz+iz-3), iy, ix) &
                       -nabz(2) * zu3d(modz(NLz+iz-2), iy, ix) &
                       -nabz(1) * zu3d(modz(NLz+iz-1), iy, ix) &
+                      +zI * rvec_kac(3) * zu3d(iz, iy, ix) &
                       +nabz(1) * zu3d(modz(NLz+iz+1), iy, ix) &
                       +nabz(2) * zu3d(modz(NLz+iz+2), iy, ix) &
                       +nabz(3) * zu3d(modz(NLz+iz+3), iy, ix) &
                       +nabz(4) * zu3d(modz(NLz+iz+4), iy, ix)
-        nab_ikac(1:3) = nab_ikac(1:3) + zI * rvec_kac(1:3) * zu3d(iz, iy, ix) 
         ! Current density
         rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
           & + aimag(conjg(zu3d(iz, iy, ix)) * nab_ikac(1:3)) * (occ_ik_ib * 0.5d0)
