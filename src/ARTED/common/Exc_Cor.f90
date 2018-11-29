@@ -495,27 +495,29 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          zs(1)=nabx(1)*(zu_GS(ifdx(1,i),ib,ik)-zu_GS(ifdx(-1,i),ib,ik))&
-            &  +nabx(2)*(zu_GS(ifdx(2,i),ib,ik)-zu_GS(ifdx(-2,i),ib,ik))&
-            &  +nabx(3)*(zu_GS(ifdx(3,i),ib,ik)-zu_GS(ifdx(-3,i),ib,ik))&
-            &  +nabx(4)*(zu_GS(ifdx(4,i),ib,ik)-zu_GS(ifdx(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,1)*zu_GS(i,ib,ik)
-          zs(2)=naby(1)*(zu_GS(ifdy(1,i),ib,ik)-zu_GS(ifdy(-1,i),ib,ik))&
-            &  +naby(2)*(zu_GS(ifdy(2,i),ib,ik)-zu_GS(ifdy(-2,i),ib,ik))&
-            &  +naby(3)*(zu_GS(ifdy(3,i),ib,ik)-zu_GS(ifdy(-3,i),ib,ik))&
-            &  +naby(4)*(zu_GS(ifdy(4,i),ib,ik)-zu_GS(ifdy(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,2)*zu_GS(i,ib,ik)            
-          zs(3)=nabz(1)*(zu_GS(ifdz(1,i),ib,ik)-zu_GS(ifdz(-1,i),ib,ik))&
-            &  +nabz(2)*(zu_GS(ifdz(2,i),ib,ik)-zu_GS(ifdz(-2,i),ib,ik))&
-            &  +nabz(3)*(zu_GS(ifdz(3,i),ib,ik)-zu_GS(ifdz(-3,i),ib,ik))&
-            &  +nabz(4)*(zu_GS(ifdz(4,i),ib,ik)-zu_GS(ifdz(-4,i),ib,ik))&
-            &  +zI*kAc0(ik,3)*zu_GS(i,ib,ik)   
-          tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
-            &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
+          call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+
+          ! zs(1)=nabx(1)*(zu_GS(ifdx(1,i),ib,ik)-zu_GS(ifdx(-1,i),ib,ik))&
+          !   &  +nabx(2)*(zu_GS(ifdx(2,i),ib,ik)-zu_GS(ifdx(-2,i),ib,ik))&
+          !   &  +nabx(3)*(zu_GS(ifdx(3,i),ib,ik)-zu_GS(ifdx(-3,i),ib,ik))&
+          !   &  +nabx(4)*(zu_GS(ifdx(4,i),ib,ik)-zu_GS(ifdx(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,1)*zu_GS(i,ib,ik)
+          ! zs(2)=naby(1)*(zu_GS(ifdy(1,i),ib,ik)-zu_GS(ifdy(-1,i),ib,ik))&
+          !   &  +naby(2)*(zu_GS(ifdy(2,i),ib,ik)-zu_GS(ifdy(-2,i),ib,ik))&
+          !   &  +naby(3)*(zu_GS(ifdy(3,i),ib,ik)-zu_GS(ifdy(-3,i),ib,ik))&
+          !   &  +naby(4)*(zu_GS(ifdy(4,i),ib,ik)-zu_GS(ifdy(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,2)*zu_GS(i,ib,ik)            
+          ! zs(3)=nabz(1)*(zu_GS(ifdz(1,i),ib,ik)-zu_GS(ifdz(-1,i),ib,ik))&
+          !   &  +nabz(2)*(zu_GS(ifdz(2,i),ib,ik)-zu_GS(ifdz(-2,i),ib,ik))&
+          !   &  +nabz(3)*(zu_GS(ifdz(3,i),ib,ik)-zu_GS(ifdz(-3,i),ib,ik))&
+          !   &  +nabz(4)*(zu_GS(ifdz(4,i),ib,ik)-zu_GS(ifdz(-4,i),ib,ik))&
+          !   &  +zI*kAc0(ik,3)*zu_GS(i,ib,ik)   
+          ! tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
+          !   &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
+          ! ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          ! ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          ! ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
 !$omp end parallel
@@ -538,7 +540,9 @@ call start_collection("rho_j_tau_1")
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          call experimental_kernel(zu(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          ! call experimental_kernel(zu(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          j_s_l_omp2(1:3,1:NL,thr_id) = 0d0
+          tau_s_l_omp(1:NL,thr_id) = 0d0
           ! zs(1)=nabx(1)*(zu(ifdx(1,i),ib,ik)-zu(ifdx(-1,i),ib,ik))&
           !   &  +nabx(2)*(zu(ifdx(2,i),ib,ik)-zu(ifdx(-2,i),ib,ik))&
           !   &  +nabx(3)*(zu(ifdx(3,i),ib,ik)-zu(ifdx(-3,i),ib,ik))&
@@ -795,6 +799,15 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   complex(8) :: grad_tmp(1:3)
   
   zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
+  ! Periodic Boundary Condition:
+  ! (Lower Bound)
+  zu3d(-3:0, :, :) = zu3d(NLz-3:NLz, :, :)
+  zu3d(:, -3:0, :) = zu3d(:, NLy-3:NLy, :)
+  zu3d(:, :, -3:0) = zu3d(:, :, NLz-3:NLz)
+  ! (Upper Bound)
+  zu3d(NLz+1:NLz+4, :, :) = zu3d(1:4, :, :)
+  zu3d(:, NLz+1:NLz+4, :) = zu3d(:, 1:4, :)
+  zu3d(:, :, NLz+1:NLz+4) = zu3d(:, :, 1:4)
 
   do ix = 1, NLx
     do iy = 1, NLy
