@@ -538,7 +538,7 @@ call start_collection("rho_j_tau_1")
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          call experimental_kernel(zu(:,ib,ik), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          call experimental_kernel(zu(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
           ! zs(1)=nabx(1)*(zu(ifdx(1,i),ib,ik)-zu(ifdx(-1,i),ib,ik))&
           !   &  +nabx(2)*(zu(ifdx(2,i),ib,ik)-zu(ifdx(-2,i),ib,ik))&
           !   &  +nabx(3)*(zu(ifdx(3,i),ib,ik)-zu(ifdx(-3,i),ib,ik))&
@@ -779,10 +779,11 @@ call stop_collection("rho_j_tau_1")
   return
 End Subroutine rho_j_tau
 
-subroutine experimental_kernel(zu1d, occ_ik_ib, rj1d, tau1d)
+subroutine experimental_kernel(zu1d, kAc, occ_ik_ib, rj1d, tau1d)
   use Global_Variables
   implicit none
   complex(8), intent(in) :: zu1d(1:NL)
+  real(8), intent(in) :: kAc(3)
   real(8), intent(in) :: occ_ik_ib
   real(8), intent(inout) :: rj1d(1:3, 1:NL)
   real(8), intent(inout) :: tau1d(1:NL)
