@@ -807,7 +807,6 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   
   
   zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
-  return
 
   ! Periodic Boundary Condition:
   ! (Lower Bound)
@@ -818,6 +817,8 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   zu3d(NLz+1:NLz+4, :, :) = zu3d(1:4, :, :)
   zu3d(:, NLy+1:NLy+4, :) = zu3d(:, 1:4, :)
   zu3d(:, :, NLx+1:NLx+4) = zu3d(:, :, 1:4)
+
+  return
 
   do ix = 1, NLx
     do iy = 1, NLy
