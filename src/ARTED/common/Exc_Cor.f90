@@ -488,7 +488,6 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
 
     select case(Nd)
     case(4)
-      write(*,*) "GS Entrance"
 
       thr_id=0
 !$omp parallel private(thr_id)
@@ -498,7 +497,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         call experimental_kernel( &
           & zu_GS(1:NL,ib,ik), &
-          & kAc0(ik,1:3), occ(ik, ib), &
+          & kAc0(ik,1:3), occ(ib,ik), &
           & j_s_l_omp2(1:3,1:NL,thr_id), &
           & tau_s_l_omp(1:NL,thr_id) &
           & )
@@ -534,8 +533,6 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       call err_finalize('Nd /= 4')
     end select
 
-    write(*,*) "GS END"
-
   
   else  if(GS_RT == calc_mode_rt)then
 
@@ -552,7 +549,7 @@ call start_collection("rho_j_tau_1")
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         call experimental_kernel( &
           & zu(1:NL,ib,ik), &
-          & kAc0(ik,1:3), occ(ik, ib), &
+          & kAc0(ik,1:3), occ(ib,ik), &
           & j_s_l_omp2(1:3,1:NL,thr_id), &
           & tau_s_l_omp(1:NL,thr_id) &
           & )
