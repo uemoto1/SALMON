@@ -839,10 +839,10 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
         nab_ikac(1:3) = nab_ikac(1:3) + zI * rvec_kac(1:3) * zu3d(iz, iy, ix) 
         ! Current density
         rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
-          & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib * 0.5d0)
+          & + aimag(conjg(zu3d(iz, iy, ix)) * nab_ikac(1:3)) * (occ_ik_ib * 0.5d0)
         ! Kinetic energy density
         tau3d(iz, iy, ix) =  tau3d(iz, iy, ix) &
-          & + 0.5d0 * sum(abs(grad_tmp(1:3)) ** 2) * (occ_ik_ib * 0.5d0)
+          & + 0.5d0 * sum(abs(nab_ikac(1:3)) ** 2) * (occ_ik_ib * 0.5d0)
       end do
     end do
   end do
