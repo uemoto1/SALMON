@@ -482,6 +482,8 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   tau_s_l_omp=0d0
   ! j_s_l_omp=0d0
   j_s_l_omp2=0d0
+  
+  write(*,*) "Entrance"
 
   if(GS_RT == calc_mode_gs)then
 
