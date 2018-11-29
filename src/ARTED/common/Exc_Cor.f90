@@ -810,9 +810,8 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   ! (Upper Bound)
   zu3d(NLz+1:NLz+4, :, :) = zu3d(1:4, :, :)
   zu3d(:, NLz+1:NLz+4, :) = zu3d(:, 1:4, :)
-  zu3d(:, :, NLz+1:NLz+4) = zu3d(:, :, 1:4
+  zu3d(:, :, NLz+1:NLz+4) = zu3d(:, :, 1:4)
 
-  
   return
 
   do ix = 1, NLx
