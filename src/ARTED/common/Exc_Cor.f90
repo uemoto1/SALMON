@@ -470,7 +470,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   integer :: thr_id,omp_get_thread_num
   
   ! Experiments on PK11
-  complex(8) :: j_s_l_omp2(1:3,1:NL,0:NUMBER_THREADS-1)
+  real(8) :: j_s_l_omp2(1:3,1:NL,0:NUMBER_THREADS-1)
   
 
 !$acc update self(zu) if_present
