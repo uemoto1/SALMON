@@ -847,8 +847,8 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
       end do
     end do
   end do
-  ! rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
-  ! tau1d(1:NL) = tau1d(1:NL) + reshape(tau3d, (/NL/))
+  rj1d(1:3, 1:NL) = rj1d(1:3, 1:NL) + reshape(rj3d, (/3, NL/))
+  tau1d(1:NL) = tau1d(1:NL) + reshape(tau3d, (/NL/))
   return
 end subroutine experimental_kernel
 
