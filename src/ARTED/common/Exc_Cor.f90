@@ -555,10 +555,10 @@ call start_collection("rho_j_tau_1")
             &  +zI*kAc0(ik,3)*zu(i,ib,ik)
           tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
             &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1,i,thr_id)+aimag(conjg(zu(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
 !$omp end parallel
