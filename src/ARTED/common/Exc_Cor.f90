@@ -495,7 +495,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
       do ikb=1,NKB
         ik=ik_table(ikb) ; ib=ib_table(ikb)  
         do i=1,NL
-          ! call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
+          call experimental_kernel(zu_GS(:,ib,ik), kAc0(ik,1:3), occ(ik, ib), j_s_l_omp2(1:3,1:NL,thr_id),  tau_s_l_omp(1:NL,thr_id))
           j_s_l_omp2(1:3,1:NL,thr_id) = 0d0
           tau_s_l_omp(1:NL,thr_id) = 0d0
 
