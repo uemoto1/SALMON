@@ -807,8 +807,6 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
   
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
-  
-  zu3d = 0d0; rj3d = 0d0; tau3d = 0d0;
 
   do ix = 1, NLx
     do iy = 1, NLy
