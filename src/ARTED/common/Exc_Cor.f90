@@ -574,12 +574,12 @@ call stop_collection("rho_j_tau_1")
   end if
 
   tau_s_l(:) = tau_s_l_omp(:,0)
-  j_s_l(:,1) = j_s_l_omp(:,1,0)
-  j_s_l(:,2) = j_s_l_omp(:,2,0)
-  j_s_l(:,3) = j_s_l_omp(:,3,0)
-  ! j_s_l(:,1) = j_s_l_omp2(1,:,0)
-  ! j_s_l(:,2) = j_s_l_omp2(2,:,0)
-  ! j_s_l(:,3) = j_s_l_omp2(3,:,0)
+  ! j_s_l(:,1) = j_s_l_omp(:,1,0)
+  ! j_s_l(:,2) = j_s_l_omp(:,2,0)
+  ! j_s_l(:,3) = j_s_l_omp(:,3,0)
+  j_s_l(:,1) = j_s_l_omp2(1,:,0)
+  j_s_l(:,2) = j_s_l_omp2(2,:,0)
+  j_s_l(:,3) = j_s_l_omp2(3,:,0)
 
   
 
