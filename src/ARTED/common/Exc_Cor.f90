@@ -842,8 +842,8 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
                       +nabx(4) * zu3d(iz+4, iy, ix) &
                       -nabx(4) * zu3d(iz-4, iy, ix) &
                       +zI * kAc0t(3) * zu3d(iz, iy, ix)
-        ! rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
-        ! tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
+        rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
+        tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
       end do
     end do
   end do
