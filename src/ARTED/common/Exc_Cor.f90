@@ -480,7 +480,7 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
   if(flag_nlcc)rho_s = rho_s + 0.5d0*rho_nlcc
 
   tau_s_l_omp=0d0
-  j_s_l_omp=0d0
+  ! j_s_l_omp=0d0
   j_s_l_omp2=0d0
 
   if(GS_RT == calc_mode_gs)then
@@ -512,9 +512,9 @@ Subroutine rho_j_tau(GS_RT,rho_s,tau_s,j_s,grho_s,lrho_s)
             &  +zI*kAc0(ik,3)*zu_GS(i,ib,ik)   
           tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
             &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
           j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
@@ -555,9 +555,9 @@ call start_collection("rho_j_tau_1")
             &  +zI*kAc0(ik,3)*zu(i,ib,ik)
           tau_s_l_omp(i,thr_id)=tau_s_l_omp(i,thr_id) &
             &+(abs(zs(1))**2+abs(zs(2))**2+abs(zs(3))**2)*(occ(ib,ik)*0.5d0)*0.5d0
-          j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
-          j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,1,thr_id)=j_s_l_omp(i,1,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,2,thr_id)=j_s_l_omp(i,2,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(2))*(occ(ib,ik)*0.5d0)
+          ! j_s_l_omp(i,3,thr_id)=j_s_l_omp(i,3,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(3))*(occ(ib,ik)*0.5d0)
           j_s_l_omp2(1:3,i,thr_id)=j_s_l_omp2(1:3,i,thr_id)+aimag(conjg(zu_GS(i,ib,ik))*zs(1:3))*(occ(ib,ik)*0.5d0)
         enddo
       end do
