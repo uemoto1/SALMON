@@ -809,37 +809,35 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
-  return
-
   do ix = 1, NLx
     do iy = 1, NLy
       do iz = 1, NLz
-        grad_tmp(1) = +nabx(1) * zu3d(iz, iy, modx(NLx+ix+1)) &
-                      -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1)) &
-                      +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2)) &
-                      -nabx(2) * zu3d(iz, iy, modx(NLx+ix-2)) &
-                      +nabx(3) * zu3d(iz, iy, modx(NLx+ix+3)) &
-                      -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3)) &
-                      +nabx(4) * zu3d(iz, iy, modx(NLx+ix+4)) &
-                      -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4)) &
+        grad_tmp(1) = +nabx(1) * zu3d(iz, iy, modx(NLx+ix+1-1)+1) &
+                      -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1-1)+1) &
+                      +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2-1)+1) &
+                      -nabx(2) * zu3d(iz, iy, modx(NLx+ix-2-1)+1) &
+                      +nabx(3) * zu3d(iz, iy, modx(NLx+ix+3-1)+1) &
+                      -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3-1)+1) &
+                      +nabx(4) * zu3d(iz, iy, modx(NLx+ix+4-1)+1) &
+                      -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4-1)+1) &
                       +zI * kAc0t(1) * zu3d(iz, iy, ix)
-        grad_tmp(2) = +nabx(1) * zu3d(iz, mody(NLy+iy+1), ix) &
-                      -nabx(1) * zu3d(iz, mody(NLy+iy-1), ix) &
-                      +nabx(2) * zu3d(iz, mody(NLy+iy+2), ix) &
-                      -nabx(2) * zu3d(iz, mody(NLy+iy-2), ix) &
-                      +nabx(3) * zu3d(iz, mody(NLy+iy+3), ix) &
-                      -nabx(3) * zu3d(iz, mody(NLy+iy-3), ix) &
-                      +nabx(4) * zu3d(iz, mody(NLy+iy+4), ix) &
-                      -nabx(4) * zu3d(iz, mody(NLy+iy-4), ix) &
+        grad_tmp(2) = +nabx(1) * zu3d(iz, mody(NLy+iy+1-1)+1, ix) &
+                      -nabx(1) * zu3d(iz, mody(NLy+iy-1-1)+1, ix) &
+                      +nabx(2) * zu3d(iz, mody(NLy+iy+2-1)+1, ix) &
+                      -nabx(2) * zu3d(iz, mody(NLy+iy-2-1)+1, ix) &
+                      +nabx(3) * zu3d(iz, mody(NLy+iy+3-1)+1, ix) &
+                      -nabx(3) * zu3d(iz, mody(NLy+iy-3-1)+1, ix) &
+                      +nabx(4) * zu3d(iz, mody(NLy+iy+4-1)+1, ix) &
+                      -nabx(4) * zu3d(iz, mody(NLy+iy-4-1)+1, ix) &
                       +zI * kAc0t(2) * zu3d(iz, iy, ix)
-        grad_tmp(1) = +nabx(1) * zu3d(modz(NLz+iz+1), iy, ix) &
-                      -nabx(1) * zu3d(modz(NLz+iz-1), iy, ix) &
-                      +nabx(2) * zu3d(modz(NLz+iz+2), iy, ix) &
-                      -nabx(2) * zu3d(modz(NLz+iz-2), iy, ix) &
-                      +nabx(3) * zu3d(modz(NLz+iz+3), iy, ix) &
-                      -nabx(3) * zu3d(modz(NLz+iz-3), iy, ix) &
-                      +nabx(4) * zu3d(modz(NLz+iz+4), iy, ix) &
-                      -nabx(4) * zu3d(modz(NLz+iz-4), iy, ix) &
+        grad_tmp(1) = +nabx(1) * zu3d(modz(NLz+iz+1-1)+1, iy, ix) &
+                      -nabx(1) * zu3d(modz(NLz+iz-1-1)+1, iy, ix) &
+                      +nabx(2) * zu3d(modz(NLz+iz+2-1)+1, iy, ix) &
+                      -nabx(2) * zu3d(modz(NLz+iz-2-1)+1, iy, ix) &
+                      +nabx(3) * zu3d(modz(NLz+iz+3-1)+1, iy, ix) &
+                      -nabx(3) * zu3d(modz(NLz+iz-3-1)+1, iy, ix) &
+                      +nabx(4) * zu3d(modz(NLz+iz+4-1)+1, iy, ix) &
+                      -nabx(4) * zu3d(modz(NLz+iz-4-1)+1, iy, ix) &
                       +zI * kAc0t(3) * zu3d(iz, iy, ix)
         rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
           & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
