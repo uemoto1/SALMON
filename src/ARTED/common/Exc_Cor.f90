@@ -798,12 +798,12 @@ call stop_collection("rho_j_tau_1")
   return
 End Subroutine rho_j_tau
 
-subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
+subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
   use Global_Variables
   use opt_variables, only: modx, mody, modz
   implicit none
   complex(8), intent(in) :: zu3d(0:NLz-1, 0:NLy-1, 0:NLx-1)
-  real(8), intent(in) :: kAc0t(3)
+  real(8), intent(in) :: rvec_kac(1:3)
   real(8), intent(in) :: occ_ik_ib
   real(8), intent(inout) :: rj3d(1:3, 0:NLz-1, 0:NLy-1, 0:NLx-1)
   real(8), intent(inout) :: tau3d(0:NLz-1, 0:NLy-1, 0:NLx-1)
@@ -814,6 +814,7 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
   do ix = 0, NLx-1
     do iy = 0, NLy-1
       do iz = 0, NLz-1
+        ! Gradient u(r)
         grad_tmp(1) = +nabx(1) * zu3d(iz, iy, modx(NLx+ix+1)) &
                       -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1)) &
                       +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2)) &
@@ -822,7 +823,7 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
                       -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3)) &
                       +nabx(4) * zu3d(iz, iy, modx(NLx+ix+4)) &
                       -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4)) &
-                      +zI * kAc0t(1) * zu3d(iz, iy, ix)
+                      +zI * rvec_kac(1) * zu3d(iz, iy, ix)
         grad_tmp(2) = +naby(1) * zu3d(iz, mody(NLy+iy+1), ix) &
                       -naby(1) * zu3d(iz, mody(NLy+iy-1), ix) &
                       +naby(2) * zu3d(iz, mody(NLy+iy+2), ix) &
@@ -831,7 +832,7 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
                       -naby(3) * zu3d(iz, mody(NLy+iy-3), ix) &
                       +naby(4) * zu3d(iz, mody(NLy+iy+4), ix) &
                       -naby(4) * zu3d(iz, mody(NLy+iy-4), ix) &
-                      +zI * kAc0t(2) * zu3d(iz, iy, ix)
+                      +zI * rvec_kac(2) * zu3d(iz, iy, ix)
         grad_tmp(3) = +nabz(1) * zu3d(modz(NLz+iz+1), iy, ix) &
                       -nabz(1) * zu3d(modz(NLz+iz-1), iy, ix) &
                       +nabz(2) * zu3d(modz(NLz+iz+2), iy, ix) &
@@ -840,11 +841,13 @@ subroutine experimental_kernel(zu3d, kAc0t, occ_ik_ib, rj3d, tau3d)
                       -nabz(3) * zu3d(modz(NLz+iz-3), iy, ix) &
                       +nabz(4) * zu3d(modz(NLz+iz+4), iy, ix) &
                       -nabz(4) * zu3d(modz(NLz+iz-4), iy, ix) &
-                      +zI * kAc0t(3) * zu3d(iz, iy, ix)
+                      +zI * rvec_kac(3) * zu3d(iz, iy, ix)
+        ! Current density
         rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
-          & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
+          & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib * 0.5d0)
+        ! Kinetic energy density
         tau3d(iz, iy, ix) =  tau3d(iz, iy, ix) &
-          & + sum(abs(grad_tmp(1:3)) ** 2) * 0.5d0 * (occ_ik_ib*0.5d0)
+          & + 0.5d0 * sum(abs(grad_tmp(1:3)) ** 2) * (occ_ik_ib * 0.5d0)
       end do
     end do
   end do
