@@ -800,6 +800,8 @@ subroutine experimental_kernel(zu1d, kAc0t, occ_ik_ib, rj1d, tau1d)
   integer :: ix, iy, iz
   complex(8) :: grad_tmp(1:3)
   
+  return
+  
   zu3d(1:NLz, 1:NLy, 1:NLx) = reshape(zu1d(1:NL), (/NLz, NLy, NLz/))
   ! Periodic Boundary Condition:
   ! (Lower Bound)
