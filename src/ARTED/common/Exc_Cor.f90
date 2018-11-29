@@ -779,11 +779,11 @@ call stop_collection("rho_j_tau_1")
   return
 End Subroutine rho_j_tau
 
-subroutine experimental_kernel(zu1d, kAc, occ_ik_ib, rj1d, tau1d)
+subroutine experimental_kernel(zu1d, kAc0, occ_ik_ib, rj1d, tau1d)
   use Global_Variables
   implicit none
   complex(8), intent(in) :: zu1d(1:NL)
-  real(8), intent(in) :: kAc(3)
+  real(8), intent(in) :: kAc0(3)
   real(8), intent(in) :: occ_ik_ib
   real(8), intent(inout) :: rj1d(1:3, 1:NL)
   real(8), intent(inout) :: tau1d(1:NL)
@@ -807,7 +807,7 @@ subroutine experimental_kernel(zu1d, kAc, occ_ik_ib, rj1d, tau1d)
                       -nabx(3) * zu3d(iz, iy, ix-3) &
                       +nabx(4) * zu3d(iz, iy, ix+4) &
                       -nabx(4) * zu3d(iz, iy, ix-4) &
-                      +zI * kAc(1) * zu3d(iz, iy, ix)
+                      +zI * kAc0(1) * zu3d(iz, iy, ix)
         grad_tmp(2) = +nabx(1) * zu3d(iz, iy+1, ix) &
                       -nabx(1) * zu3d(iz, iy-1, ix) &
                       +nabx(2) * zu3d(iz, iy+2, ix) &
@@ -816,7 +816,7 @@ subroutine experimental_kernel(zu1d, kAc, occ_ik_ib, rj1d, tau1d)
                       -nabx(3) * zu3d(iz, iy-3, ix) &
                       +nabx(4) * zu3d(iz, iy+4, ix) &
                       -nabx(4) * zu3d(iz, iy-4, ix) &
-                      +zI * kAc(2) * zu3d(iz, iy, ix)
+                      +zI * kAc0(2) * zu3d(iz, iy, ix)
         grad_tmp(1) = +nabx(1) * zu3d(iz+1, iy, ix) &
                       -nabx(1) * zu3d(iz-1, iy, ix) &
                       +nabx(2) * zu3d(iz+2, iy, ix) &
@@ -825,7 +825,7 @@ subroutine experimental_kernel(zu1d, kAc, occ_ik_ib, rj1d, tau1d)
                       -nabx(3) * zu3d(iz-3, iy, ix) &
                       +nabx(4) * zu3d(iz+4, iy, ix) &
                       -nabx(4) * zu3d(iz-4, iy, ix) &
-                      +zI * kAc(3) * zu3d(iz, iy, ix)
+                      +zI * kAc0(3) * zu3d(iz, iy, ix)
         rj3d(1:3, iz, iy, ix)  = aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib*0.5d0)
         tau3d(iz, iy, ix) = sum(conjg(grad_tmp(1:3)) * grad_tmp(1:3)) * 0.5d0 * (occ_ik_ib*0.5d0)
       end do
