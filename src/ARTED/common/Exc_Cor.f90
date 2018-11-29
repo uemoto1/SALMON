@@ -806,13 +806,13 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
   real(8), intent(inout) :: tau3d(0:NLz-1, 0:NLy-1, 0:NLx-1)
   
   integer :: ix, iy, iz
-  complex(8) :: grd_ikac(1:3)
+  complex(8) :: nab_ikac(1:3)
   
   do ix = 0, NLx-1
     do iy = 0, NLy-1
       do iz = 0, NLz-1
         ! Gradient u(r)
-        grd_ikac(1) = -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4)) & 
+        nab_ikac(1) = -nabx(4) * zu3d(iz, iy, modx(NLx+ix-4)) & 
                       -nabx(3) * zu3d(iz, iy, modx(NLx+ix-3)) &
                       -nabx(2) * zu3d(iz, iy, modx(NLx+ix-2)) &
                       -nabx(1) * zu3d(iz, iy, modx(NLx+ix-1)) &
@@ -820,7 +820,7 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       +nabx(2) * zu3d(iz, iy, modx(NLx+ix+2)) &
                       +nabx(3) * zu3d(iz, iy, modx(NLx+ix+3)) &
                       +nabx(4) * zu3d(iz, iy, modx(NLx+ix+4))
-        grd_ikac(2) = -naby(4) * zu3d(iz, mody(NLy+iy-4), ix) &
+        nab_ikac(2) = -naby(4) * zu3d(iz, mody(NLy+iy-4), ix) &
                       -naby(3) * zu3d(iz, mody(NLy+iy-3), ix) &
                       -naby(2) * zu3d(iz, mody(NLy+iy-2), ix) &
                       -naby(1) * zu3d(iz, mody(NLy+iy-1), ix) &
@@ -828,7 +828,7 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       +naby(2) * zu3d(iz, mody(NLy+iy+2), ix) &
                       +naby(3) * zu3d(iz, mody(NLy+iy+3), ix) &
                       +naby(4) * zu3d(iz, mody(NLy+iy+4), ix)
-        grd_ikac(3) = -nabz(4) * zu3d(modz(NLz+iz-4), iy, ix) &
+        nab_ikac(3) = -nabz(4) * zu3d(modz(NLz+iz-4), iy, ix) &
                       -nabz(3) * zu3d(modz(NLz+iz-3), iy, ix) &
                       -nabz(2) * zu3d(modz(NLz+iz-2), iy, ix) &
                       -nabz(1) * zu3d(modz(NLz+iz-1), iy, ix) &
@@ -836,7 +836,7 @@ subroutine experimental_kernel(zu3d, rvec_kac, occ_ik_ib, rj3d, tau3d)
                       +nabz(2) * zu3d(modz(NLz+iz+2), iy, ix) &
                       +nabz(3) * zu3d(modz(NLz+iz+3), iy, ix) &
                       +nabz(4) * zu3d(modz(NLz+iz+4), iy, ix)
-        grd_ikac(1:3) = grad_tmp(1:3) + zI * rvec_kac(1:3) * zu3d(iz, iy, ix) 
+        nab_ikac(1:3) = nab_ikac(1:3) + zI * rvec_kac(1:3) * zu3d(iz, iy, ix) 
         ! Current density
         rj3d(1:3, iz, iy, ix) = rj3d(1:3, iz, iy, ix) &
           & + aimag(conjg(zu3d(iz, iy, ix)) * grad_tmp(1:3)) * (occ_ik_ib * 0.5d0)
