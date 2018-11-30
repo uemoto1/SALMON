@@ -14,7 +14,7 @@ set(C_FLAGS_General             "-Kocl,nooptmsg -Xg -std=gnu99")
 
 set(CMAKE_Fortran_COMPILER      "mpifrtpx")
 set(CMAKE_Fortran_FLAGS_DEBUG   "-O2 -g")
-set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -Kfast,simd=1")
+set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -Kfast,simd=1 -Qt")
 set(CMAKE_C_COMPILER            "mpifccpx")
 set(CMAKE_C_FLAGS_DEBUG         "-O2 -g")
 set(CMAKE_C_FLAGS_RELEASE       "-O3 -Kfast,simd=1")
