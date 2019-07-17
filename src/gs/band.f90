@@ -40,7 +40,7 @@ module band
 
 
         ! Create ik_tbl with periodic boundary condition:
-        call create_ik_tbk()
+        call create_ik_tbl()
 
         ! Retrieve entire wavefunction:
         call retrieve_entire_zwf()
