@@ -35,7 +35,7 @@ module band
         integer, parameter :: nrep = 2
 
         integer :: ik_tbl(nk1*nrep, nk2*nrep, nk3*nrep)
-        integer :: im, ik1, ik2, ik3, jdk
+        integer :: im, ik1, ik2, ik3, jdk, ik, io
         complex(8), allocatable :: zwf(:, :, :, :, :)
 
 
