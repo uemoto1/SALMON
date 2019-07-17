@@ -118,7 +118,7 @@ module band
         
         do ik = wf_info%ik_s, wf_info%ik_e
             do io = wf_info%io_s, wf_info%io_e
-                call copy_data( 
+                call copy_data( &
                     wavefunction%zwf( &
                         & rgrid_mg%is(1):rgrid_mg%ie(1), &
                         & rgrid_mg%is(2):rgrid_mg%ie(2), &
