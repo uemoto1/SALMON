@@ -36,7 +36,7 @@ module band
 
         integer :: ik_tbl(nk1*nrep, nk2*nrep, nk3*nrep)
         integer :: im, ik1, ik2, ik3, jdk
-        complex(8), allocatable :: zwf(:, :, :, :)
+        complex(8), allocatable :: zwf(:, :, :, :, :)
 
 
         ! Create ik_tbl with periodic boundary condition:
@@ -109,7 +109,7 @@ module band
         use pack_unpack
         implicit none
         integer, parameter :: im = 1
-        complex(8), allocatable :: zwf_tmp(:, :, :, :)
+        complex(8), allocatable :: zwf_tmp(:, :, :, :, :)
 
         allocate(zwf_tmp( &
             & rgrid_lg%is(1):rgrid_lg%ie(1), &
