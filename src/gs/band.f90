@@ -183,7 +183,6 @@ module band
         return
     end subroutine calc_prod
                     
-        
 
 
         
@@ -195,6 +194,8 @@ module band
 
 
     end subroutine
+end module
+
 
 
 
