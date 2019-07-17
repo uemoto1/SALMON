@@ -22,7 +22,6 @@ module band
 
     !> Calculate kgrid production
     subroutine calc_kgrid_prod(system, rgrid_lg, rgrid_mg, wf_info, wavefunction, nk1, nk2, nk3, ndk, prod_dk)
-        use pack_unpack
         use structures
         use salmon_parallel
         use salmon_communication
@@ -105,6 +104,7 @@ module band
 
 
     subroutine retrieve_entire_zwf()
+        use pack_unpack
         implicit none
         integer, parameter :: im = 1
         complex(8) :: zwf_tmp(:, :, :, :)
