@@ -124,7 +124,7 @@ module band
                         & rgrid_mg%is(1):rgrid_mg%ie(1), &
                         & rgrid_mg%is(2):rgrid_mg%ie(2), &
                         & rgrid_mg%is(3):rgrid_mg%ie(3), &
-                        & ispin, io, ik, im),
+                        & ispin, io, ik, im), &
                     zwf_tmp( &
                         & rgrid_mg%is(1):rgrid_mg%ie(1), &
                         & rgrid_mg%is(2):rgrid_mg%ie(2), &
