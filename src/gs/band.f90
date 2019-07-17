@@ -77,6 +77,7 @@ module band
         integer :: ik_count
         integer :: ik1_o, ik2_o, ik3_o
         integer :: ik1_r, ik2_r, ik3_r
+        integer :: ir1, ir2, ir3
 
         ik_count = 0
 
