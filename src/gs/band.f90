@@ -23,21 +23,22 @@ module band
     !> Calculate kgrid production
     subroutine calc_kgrid_prod(system, rgrid_lg, rgrid_mg, wf_info, wavefunction, nk1, nk2, nk3, ndk, prod_dk)
         use structures
-        use salmon_parallel
-        use salmon_communication
         implicit none
         type(s_system) , intent(in) :: system
         type(s_rgrid), intent(in) :: rgrid_lg, rgrid_mg
         type(s_wf_info), intent(in) :: wf_info
         type(s_wavefunction), intent(in) :: wavefunction
         integer, intent(in) :: nk1, nk2, nk3, ndk
-        complex(8), intent(out) :: prod_dk(nk1, nk2, nk3, 1:3, 0:ndk, system%no, system%no)
+        complex(8), intent(out) :: prod_dk(nk1*nk2*nk3, 0:ndk, 0:ndk, 0:ndk, system%no, system%no)
         integer, parameter :: nrep = 2
 
         integer :: ik_tbl(nk1*nrep, nk2*nrep, nk3*nrep)
-        integer :: im, ik1, ik2, ik3, jdk, ik, io
-        complex(8), allocatable :: zwf(:, :, :, :, :)
-
+        integer :: im, ik1, ik2, ik3, jdk, ik, jk
+        complex(8) :: zwf( &
+            & rgrid_lg%is(1):rgrid_lg%ie(1), &
+            & rgrid_lg%is(2):rgrid_lg%ie(2), &
+            & rgrid_lg%is(3):rgrid_lg%ie(3), &
+            & system%nspin, system%no, system%nk)
 
         ! Create ik_tbl with periodic boundary condition:
         call create_ik_tbl()
@@ -49,25 +50,14 @@ module band
         do ik3 = 1, nk3
             do ik2 = 1, nk2
                 do ik1 = 1, nk1
-                    call calc_prod( &
-                        & ik1, ik2, ik3, &
-                        & ik1, ik2, ik3, &
-                        & prod_dk(ik1, ik2, ik3, 1, 0, :, :))
-                    prod_dk(ik1, ik2, ik3, 2, 0, :, :) = prod_dk(ik1, ik2, ik3, 1, 0, :, :)
-                    prod_dk(ik1, ik2, ik3, 3, 0, :, :) = prod_dk(ik1, ik2, ik3, 1, 0, :, :)
-                    do jdk = 1, ndk
-                        call calc_prod( &
-                            & ik1, ik2, ik3, &
-                            & ik1 + jdk, ik2, ik3, &
-                            & prod_dk(ik1, ik2, ik3, 1, jdk, :, :))
-                        call calc_prod( &
-                            & ik1, ik2, ik3, &
-                            & ik1, ik2 + jdk, ik3, &
-                            & prod_dk(ik1, ik2, ik3, 2, jdk, :, :))
-                        call calc_prod( &
-                            & ik1, ik2, ik3, &
-                            & ik1, ik2, ik3 + jdk, &
-                            & prod_dk(ik1, ik2, ik3, 3, jdk, :, :))
+                    ik = ik_tbl(ik1, ik2, ik3)
+                    do jdk3 = 0, ndk
+                        do jdk2 = 0, ndk
+                            do jdk1 = 0, ndk
+                                jk = ik_tbl(ik1+jdk1, ik2+jdk2, ik3+jdk3)
+                                call calc_prod(ik, jk, prod_dk(ik, jdk1, jdk2, jdk3, :, :))
+                            end do
+                        end do
                     end do
                 end do
             end do
@@ -112,56 +102,49 @@ module band
 
 
     subroutine retrieve_entire_zwf()
-        use pack_unpack
+        use pack_unpack, only: copy_data
+        use salmon_communication, only: comm_summation
         implicit none
+        integer :: io
         integer, parameter :: im = 1, ispin = 1
-        complex(8), allocatable :: zwf_tmp(:, :, :, :, :)
-
-        allocate(zwf_tmp( &
+        complex(8) :: zwf_tmp( &
             & rgrid_lg%is(1):rgrid_lg%ie(1), &
             & rgrid_lg%is(2):rgrid_lg%ie(2), &
             & rgrid_lg%is(3):rgrid_lg%ie(3), &
-            & system%no, system%nk))
+            & system%nspin, system%no, system%nk)
+
         zwf_tmp = 0d0
         
-        do ik = wf_info%ik_s, wf_info%ik_e
-            do io = wf_info%io_s, wf_info%io_e
-                call copy_data( &
-                    wavefunction%zwf( &
-                        & rgrid_mg%is(1):rgrid_mg%ie(1), &
-                        & rgrid_mg%is(2):rgrid_mg%ie(2), &
-                        & rgrid_mg%is(3):rgrid_mg%ie(3), &
-                        & ispin, io, ik, im), &
-                    zwf_tmp( &
-                        & rgrid_mg%is(1):rgrid_mg%ie(1), &
-                        & rgrid_mg%is(2):rgrid_mg%ie(2), &
-                        & rgrid_mg%is(3):rgrid_mg%ie(3), &
-                        & io, ik))
-            end do
-        end do
+        call copy_data( &
+            wavefunction%zwf( &
+                & rgrid_mg%is(1):rgrid_mg%ie(1), &
+                & rgrid_mg%is(2):rgrid_mg%ie(2), &
+                & rgrid_mg%is(3):rgrid_mg%ie(3), &
+                & 1:system%nspin, &
+                & wf_info%io_s:wf_info%io_e, &
+                & wf_info%ik_s:wf_info%ik_e, &
+                & wf_info%im_s), &
+            zwf_tmp( &
+                & rgrid_mg%is(1):rgrid_mg%ie(1), &
+                & rgrid_mg%is(2):rgrid_mg%ie(2), &
+                & rgrid_mg%is(3):rgrid_mg%ie(3), &
+                & 1:system%nspin, &
+                & wf_info%io_s:wf_info%io_e, &
+                & wf_info%ik_s:wf_info%ik_e))
         
-        allocate(zwf( &
-            & rgrid_lg%is(1):rgrid_lg%ie(1), &
-            & rgrid_lg%is(2):rgrid_lg%ie(2), &
-            & rgrid_lg%is(3):rgrid_lg%ie(3), &
-            & system%no, system%nk))
-
         call comm_summation( &
             & zwf_tmp, zwf, &
-            & system%ngrid*system%no*system%nk, &
+            & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
-
-        deallocate(zwf_tmp)
 
         return
     end subroutine retrieve_entire_zwf
 
 
-    subroutine calc_prod(iik1, iik2, iik3, jjk1, jjk2, jjk3, prod)
+    subroutine calc_prod(iik, jjk, prod_ij)
         implicit none
-        integer, intent(in) :: iik1, iik2, iik3
-        integer, intent(in) :: jjk1, jjk2, jjk3
-        complex(8), intent(out) :: prod(system%no, system%no)
+        integer, intent(in) :: iik, jjk
+        complex(8), intent(out) :: prod_ij(system%no, system%no)
 
         complex(8) zdotc ! From BLAS
         
@@ -173,17 +156,17 @@ module band
 
         do iio = 1, system%no
             do jjo = 1, iio
-                ! Compute inner product: <iik,iio|jjk,jjo>
-                prod(iio, jjo) = system%Hvol * ZDOTC( &
-                    & system%ngrid, &
-                    & zwf(:, :, :, iio, iik), 1, &
-                    & zwf(:, :, :, jjo, jjk), 1)
+                ! Compute dot-products: <iik,iio|jjk,jjo>
+                prod_ij(iio, jjo) = system%Hvol * ZDOTC( &
+                    & system%ngrid * system%nspin, &
+                    & zwf(:, :, :, :, iio, iik), 1, &
+                    & zwf(:, :, :, :, jjo, jjk), 1)
             end do
         end do
 
         do iio = 1, system%no
             do jjo = iio+1, system%no
-                prod(iio, jjo) = conjg(prod(jjo, iio))
+                prod_ij(iio, jjo) = conjg(prod_k(jjo, iio))
             end do
         end do
 
