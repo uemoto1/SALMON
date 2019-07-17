@@ -49,10 +49,16 @@ module band
         do ik3 = 1, nk3
             do ik2 = 1, nk2
                 do ik1 = 1, nk1
-                    do jdk = 0, ndk
+                    call calc_prod( &
+                        & ik1, ik2, ik3, &
+                        & ik1, ik2, ik3, &
+                        & prod_dk(ik1, ik2, ik3, 1, 0, :, :))
+                    prod_dk(ik1, ik2, ik3, 2, 0, :, :) = prod_dk(ik1, ik2, ik3, 1, 0, :, :)
+                    prod_dk(ik1, ik2, ik3, 3, 0, :, :) = prod_dk(ik1, ik2, ik3, 1, 0, :, :)
+                    do jdk = 1, ndk
                         call calc_prod( &
                             & ik1, ik2, ik3, &
-                            & ik1, ik2, ik3, &
+                            & ik1 + jdk, ik2, ik3, &
                             & prod_dk(ik1, ik2, ik3, 1, jdk, :, :))
                         call calc_prod( &
                             & ik1, ik2, ik3, &
@@ -167,6 +173,7 @@ module band
 
         do iio = 1, system%no
             do jjo = 1, iio
+                ! Compute inner product: <iik,iio|jjk,jjo>
                 prod(iio, jjo) = system%Hvol * ZDOTC( &
                     & system%ngrid, &
                     & zwf(:, :, :, iio, iik), 1, &
@@ -182,18 +189,9 @@ module band
 
         return
     end subroutine calc_prod
-                    
 
 
-        
-        
-                
-            
-        
-
-
-
-    end subroutine
+    end subroutine calc_kgrid_prod
 end module
 
 
