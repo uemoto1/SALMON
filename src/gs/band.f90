@@ -164,7 +164,7 @@ module band
 
         do iio = 1, system%no
             do jjo = 1, iio
-                prod(iio, jjo) = system%Hvol * ZDOTC(
+                prod(iio, jjo) = system%Hvol * ZDOTC( &
                     & system%ngrid, &
                     & zwf(:, :, :, iio, iik), 1, &
                     & zwf(:, :, :, jjo, jjk), 1)
