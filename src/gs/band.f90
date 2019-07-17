@@ -108,7 +108,7 @@ module band
     subroutine retrieve_entire_zwf()
         use pack_unpack
         implicit none
-        integer, parameter :: im = 1
+        integer, parameter :: im = 1, ispin = 1
         complex(8), allocatable :: zwf_tmp(:, :, :, :, :)
 
         allocate(zwf_tmp( &
