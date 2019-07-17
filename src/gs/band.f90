@@ -157,7 +157,7 @@ module band
         integer, intent(in) :: jjk1, jjk2, jjk3
         complex(8), intent(out) :: prod(system%no, system%no)
 
-        COMPLEX*16 zdotc ! From BLAS
+        complex(8) zdotc ! From BLAS
         
         integer :: iik, jjk
         integer :: iio, jjo
