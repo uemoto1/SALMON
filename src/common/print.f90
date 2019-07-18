@@ -620,7 +620,7 @@ contains
       & system%no, system%no)
 
     ! Export filename: project_directory/sysname_kprod_dk.data
-    file_prod_dk_data = trim(directory) // trim(sysname) // "_kprod_dk.data"
+    file_prod_dk_data = trim(directory) // trim(sysname) // "_prod_dk.data"
 
     ! If k-point is distributed as uniform rectangular grid:
     if (0 < minval(num_kgrid)) then
