@@ -147,6 +147,7 @@ module band
         write(*, *) lbound(zwf_all, 4), ubound(zwf_all, 4), "#X"
         write(*, *) lbound(zwf_all, 5), ubound(zwf_all, 5), "#X"
         write(*, *) lbound(zwf_all, 6), ubound(zwf_all, 6), "#X"
+        write(*, *) sum(conjg(zwf_tmp(:,:,:,:,1,1)) * zwf_tmp(:,:,:,:,1,1))
         write(*, *) sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
         endif
         return
