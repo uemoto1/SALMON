@@ -604,6 +604,7 @@ contains
     use salmon_communication, only: comm_is_root
     use salmon_file,          only: open_filehandle
     use inputoutput,          only: sysname, directory, num_kgrid
+    use band,                 only: calc_kgrid_prod
     implicit none
     type(s_rgrid),        intent(in) :: rgrid_lg, rgrid_mg
     type(s_system),       intent(in) :: system
