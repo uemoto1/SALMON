@@ -598,7 +598,7 @@ contains
 
   end subroutine
 
-  subroutine write_prod_dk_data(rgrid_lg, rgrid_mg, system, wf_info, wavefunction, k_rd)
+  subroutine write_prod_dk_data(rgrid_lg, rgrid_mg, system, wf_info, wavefunction)
     use structures,           only: s_rgrid, s_system, s_wf_info, s_wavefunction
     use salmon_parallel,      only: nproc_id_global
     use salmon_communication, only: comm_is_root
@@ -610,7 +610,6 @@ contains
     type(s_system),       intent(in) :: system
     type(s_wf_info),      intent(in) :: wf_info
     type(s_wavefunction), intent(in) :: wavefunction
-    real(8),              intent(in) :: k_rd(:, :)
 
     integer, parameter :: ndk = 1
     integer :: ik, jdk1, jdk2, jdk3, io, jo
