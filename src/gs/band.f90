@@ -174,12 +174,10 @@ module band
                     if(comm_is_root(nproc_id_global)) then
                         write(*, *) "#PRODS:", iik, iio, jjk, jjo
                         write(*, *) system%hvol * sum(conjg(zwf_all(:,:,:,:,iio,iik)) * zwf_all(:,:,:,:,iio,iik))
-                        write(*, *) system%ngrid * system%nspin
-                        write(*, *) system%Hvol * ZDOTC( &
+                        write(*, *) system%ngrid * system%nspin, system%Hvol * ZDOTC( &
                         & system%ngrid * system%nspin, &
                         & zwf_all(:, :, :, :, iio, iik), 1, &
                         & zwf_all(:, :, :, :, jjo, jjk), 1)
-
                     endif                
             end do
         end do
