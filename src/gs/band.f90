@@ -165,7 +165,7 @@ module band
 
         do iio = 1, system%no
             do jjo = iio+1, system%no
-                prod_ij(iio, jjo) = conjg(prod_k(jjo, iio))
+                prod_ij(iio, jjo) = conjg(prod_ij(jjo, iio))
             end do
         end do
 
