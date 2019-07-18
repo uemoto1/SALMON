@@ -598,4 +598,60 @@ contains
 
   end subroutine
 
+  subroutine write_prod_dk_data(rgrid_lg, rgrid_mg, system, wf_info, wavefunction, k_rd)
+    use structures,           only: s_rgrid, s_system, s_wf_info, s_wavefunction
+    use salmon_parallel,      only: nproc_id_global
+    use salmon_communication, only: comm_is_root
+    use salmon_file,          only: open_filehandle
+    use inputoutput,          only: num_kgrid
+    implicit none
+    type(s_rgrid),        intent(in) :: rgrid_lg, rgrid_mg
+    type(s_system),       intent(in) :: system
+    type(s_wf_info),      intent(in) :: wf_info
+    type(s_wavefunction), intent(in) :: wavefunction
+    real(8),              intent(in) :: k_rd(:, :)
+
+    integer, parameter :: ndk = 1
+
+    integer :: ik, jdk1, jdk2, jdk3, io, jo
+
+    character(256) :: file_prod_dk_data
+    complex(8) :: prod_dk( &
+      & system%nk, 0:nkd, 0,nkd, 0:nkd, &
+      & system%no, system%no)
+
+    file_kprod_data = trim(directory) // trim(sysname) // "_kprod.data"
+
+    ! If k-point is distributed as uniform rectangular grid:
+    if (0 < minval(num_kgrid)) then
+      ! Calculate inner-product table: prod_dk
+      call calc_kgrid_prod( &
+        & system, rgrid_lg, rgrid_mg, wf_info, wavefunction, &
+        & num_kgrid(1), num_kgrid(2), num_kgrid(3), ndk, prod_dk)
+      
+      if(comm_is_root(nproc_id_global)) then
+        fh = open_filehandle(trim(file_kprod_data))
+        write(fh, '(a)') "# ik, jdk1, jdk2, jdk3, io, jo, re, im"
+        do ik = 1, system%nk
+          do jdk1 = 0, ndk
+            do jdk2 = 0, ndk
+              do jdk3 = 0, ndk
+                do io = 1, system%no
+                  do jo = 1, system%no
+                    write(fh, '(6(i6,1x),2(e24.16e3,1x)') &
+                      & ik, jdk1, jdk2, jdk3, io, jo, &
+                      & real(prod_dk(ik, jdk1, jdk2, jdk3, io, jo)), &
+                      & aimag(prod_dk(ik, jdk1, jdk2, jdk3, io, jo))
+                  end do
+                end do
+              end do
+            end do
+          end do
+        end do
+        close(fh)
+      end if
+    end if
+    return
+  end subroutine write_prod_dk_data
+
 end module print_sub
