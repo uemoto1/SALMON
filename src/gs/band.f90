@@ -156,7 +156,9 @@ module band
 
 
     subroutine calc_prod(iik, jjk, prod_ij)
-        
+        use salmon_communication, only: comm_summation, comm_is_root
+        use salmon_parallel, only: nproc_group_global, nproc_id_global
+
         implicit none
         integer, intent(in) :: iik, jjk
         complex(8), intent(out) :: prod_ij(system%no, system%no)
