@@ -31,7 +31,7 @@ module band
         integer, intent(in) :: nk1, nk2, nk3, ndk
         complex(8), intent(out) :: prod_dk(nk1*nk2*nk3, 0:ndk, 0:ndk, 0:ndk, system%no, system%no)
         
-        integer, parameter :: nrep = 2
+        integer, parameter :: nrep = 1
 
         integer :: ik_tbl(nk1*nrep, nk2*nrep, nk3*nrep)
         integer :: im, ik, jk
@@ -84,11 +84,11 @@ module band
                 do ik1_o = 1, nk1
                     ik_count = ik_count + 1
                     ! Replicate coordinates:
-                    do ir3 = 1, nrep
+                    do ir3 = 0, nrep
                         ik3_r = ik3_o + ir3 * nk3
-                        do ir2 = 1, nrep
+                        do ir2 = 0, nrep
                             ik2_r = ik2_o + ir2 * nk2
-                            do ir1 = 1, nrep
+                            do ir1 = 0, nrep
                                 ik1_r = ik1_o + ir1 * nk1
                                 ik_tbl(ik1_r, ik2_r, ik3_r) = ik_count
                             end do
