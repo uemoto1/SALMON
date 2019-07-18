@@ -612,15 +612,15 @@ contains
     real(8),              intent(in) :: k_rd(:, :)
 
     integer, parameter :: ndk = 1
-
     integer :: ik, jdk1, jdk2, jdk3, io, jo
-
+    integer :: fh
     character(256) :: file_prod_dk_data
     complex(8) :: prod_dk( &
       & system%nk, 0:nkd, 0,nkd, 0:nkd, &
       & system%no, system%no)
 
-    file_kprod_data = trim(directory) // trim(sysname) // "_kprod.data"
+    ! Export filename: project_directory/sysname_kprod_dk.data
+    file_kprod_data = trim(directory) // trim(sysname) // "_kprod_dk.data"
 
     ! If k-point is distributed as uniform rectangular grid:
     if (0 < minval(num_kgrid)) then
