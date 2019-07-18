@@ -37,7 +37,7 @@ module band
         integer :: im, ik, jk
         integer :: ik1, ik2, ik3
         integer :: jdk1, jdk2, jdk3
-        complex(8) :: zwf( &
+        complex(8) :: zwf_all( &
             & rgrid_lg%is(1):rgrid_lg%ie(1), &
             & rgrid_lg%is(2):rgrid_lg%ie(2), &
             & rgrid_lg%is(3):rgrid_lg%ie(3), &
@@ -65,8 +65,6 @@ module band
                 end do
             end do
         end do
-
-        deallocate(zwf)
 
         return
 
@@ -110,13 +108,13 @@ module band
         implicit none
         integer :: io
         integer, parameter :: im = 1, ispin = 1
-        complex(8) :: zwf_tmp( &
+        complex(8) :: zwf_all_tmp( &
             & rgrid_lg%is(1):rgrid_lg%ie(1), &
             & rgrid_lg%is(2):rgrid_lg%ie(2), &
             & rgrid_lg%is(3):rgrid_lg%ie(3), &
             & system%nspin, system%no, system%nk)
 
-        zwf_tmp = 0d0
+        zwf_all_tmp = 0d0
         
         call copy_data( &
             wavefunction%zwf( &
@@ -127,7 +125,7 @@ module band
                 & wf_info%io_s:wf_info%io_e, &
                 & wf_info%ik_s:wf_info%ik_e, &
                 & wf_info%im_s), &
-            zwf_tmp( &
+            zwf_all_tmp( &
                 & rgrid_mg%is(1):rgrid_mg%ie(1), &
                 & rgrid_mg%is(2):rgrid_mg%ie(2), &
                 & rgrid_mg%is(3):rgrid_mg%ie(3), &
@@ -136,7 +134,7 @@ module band
                 & wf_info%ik_s:wf_info%ik_e))
         
         call comm_summation( &
-            & zwf_tmp, zwf, &
+            & zwf_all_tmp, zwf_all, &
             & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
 
@@ -160,8 +158,8 @@ module band
                 ! Compute dot-products: <iik,iio|jjk,jjo>
                 prod_ij(iio, jjo) = system%Hvol * ZDOTC( &
                     & system%ngrid * system%nspin, &
-                    & zwf(:, :, :, :, iio, iik), 1, &
-                    & zwf(:, :, :, :, jjo, jjk), 1)
+                    & zwf_all(:, :, :, :, iio, iik), 1, &
+                    & zwf_all(:, :, :, :, jjo, jjk), 1)
             end do
         end do
 
