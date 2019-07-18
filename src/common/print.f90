@@ -620,7 +620,7 @@ contains
       & system%no, system%no)
 
     ! Export filename: project_directory/sysname_kprod_dk.data
-    file_kprod_data = trim(directory) // trim(sysname) // "_kprod_dk.data"
+    file_prod_dk_data = trim(directory) // trim(sysname) // "_kprod_dk.data"
 
     ! If k-point is distributed as uniform rectangular grid:
     if (0 < minval(num_kgrid)) then
@@ -630,7 +630,7 @@ contains
         & num_kgrid(1), num_kgrid(2), num_kgrid(3), ndk, prod_dk)
       
       if(comm_is_root(nproc_id_global)) then
-        fh = open_filehandle(trim(file_kprod_data))
+        fh = open_filehandle(trim(file_prod_dk_data))
         write(fh, '(a)') "# ik, jdk1, jdk2, jdk3, io, jo, re, im"
         do ik = 1, system%nk
           do jdk1 = 0, ndk
