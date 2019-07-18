@@ -30,10 +30,13 @@ module band
         type(s_wavefunction), intent(in) :: wavefunction
         integer, intent(in) :: nk1, nk2, nk3, ndk
         complex(8), intent(out) :: prod_dk(nk1*nk2*nk3, 0:ndk, 0:ndk, 0:ndk, system%no, system%no)
+        
         integer, parameter :: nrep = 2
 
         integer :: ik_tbl(nk1*nrep, nk2*nrep, nk3*nrep)
-        integer :: im, ik1, ik2, ik3, jdk, ik, jk
+        integer :: im, ik, jk
+        integer :: ik1, ik2, ik3
+        integer :: jdk1, jdk2, jdk3
         complex(8) :: zwf( &
             & rgrid_lg%is(1):rgrid_lg%ie(1), &
             & rgrid_lg%is(2):rgrid_lg%ie(2), &
@@ -145,11 +148,9 @@ module band
         implicit none
         integer, intent(in) :: iik, jjk
         complex(8), intent(out) :: prod_ij(system%no, system%no)
+        integer :: iio, jjo
 
         complex(8) zdotc ! From BLAS
-        
-        integer :: iik, jjk
-        integer :: iio, jjo
 
         iik = ik_tbl(iik1, iik2, iik3)
         jjk = ik_tbl(jjk1, jjk2, jjk3)
