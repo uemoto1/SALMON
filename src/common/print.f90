@@ -603,7 +603,7 @@ contains
     use salmon_parallel,      only: nproc_id_global
     use salmon_communication, only: comm_is_root
     use salmon_file,          only: open_filehandle
-    use inputoutput,          only: num_kgrid
+    use inputoutput,          only: sysname, directory, num_kgrid
     implicit none
     type(s_rgrid),        intent(in) :: rgrid_lg, rgrid_mg
     type(s_system),       intent(in) :: system
