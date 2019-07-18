@@ -148,15 +148,28 @@ module band
         complex(8), intent(out) :: prod_ij(system%no, system%no)
         integer :: iio, jjo
 
+        integer :: ispin, i1, i2, i3
+
         complex(8) ZDOTC ! From BLAS
 
         do iio = 1, system%no
             do jjo = 1, iio
                 ! Compute dot-products: <iik,iio|jjk,jjo>
-                prod_ij(iio, jjo) = system%Hvol * ZDOTC( &
-                    & system%ngrid * system%nspin, &
-                    & zwf_all(:, :, :, :, iio, iik), 1, &
-                    & zwf_all(:, :, :, :, jjo, jjk), 1)
+                ! prod_ij(iio, jjo) = system%Hvol * ZDOTC( &
+                !     & system%ngrid * system%nspin, &
+                !     & zwf_all(:, :, :, :, iio, iik), 1, &
+                !     & zwf_all(:, :, :, :, jjo, jjk), 1)
+                prod_ij(iio, jjo) = 0d0
+                ispin = 1
+                do i3 = rgrid_lg%is(3):rgrid_lg%ie(3)
+                do i2 = rgrid_lg%is(2):rgrid_lg%ie(2)
+                do i1 = rgrid_lg%is(1):rgrid_lg%ie(1)
+                    prod_ij(iio, jjo) = prod_ij(iio, jjo) + &
+                    conjg(zwf_all(i1, i2, i3, ispin, iio, iik)) * &
+                    zwf_all(i1, i2, i3, ispin, jjo, jjk)
+                enddo
+                enddo
+                enddo
             end do
         end do
 
