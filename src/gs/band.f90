@@ -140,9 +140,15 @@ module band
             & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
 
-        if(comm_is_root(nproc_id_global)) &
+        if(comm_is_root(nproc_id_global)) then
+        write(*, *) lbound(zwf_all, 1), ubound(zwf_all, 1), "#X"
+        write(*, *) lbound(zwf_all, 2), ubound(zwf_all, 2), "#X"
+        write(*, *) lbound(zwf_all, 3), ubound(zwf_all, 3), "#X"
+        write(*, *) lbound(zwf_all, 4), ubound(zwf_all, 4), "#X"
+        write(*, *) lbound(zwf_all, 5), ubound(zwf_all, 5), "#X"
+        write(*, *) lbound(zwf_all, 6), ubound(zwf_all, 6), "#X"
         write(*, *) sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
-        
+        endif
         return
     end subroutine retrieve_entire_zwf
 
