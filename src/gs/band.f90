@@ -150,9 +150,6 @@ module band
 
         complex(8) ZDOTC ! From BLAS
 
-        iik = ik_tbl(iik1, iik2, iik3)
-        jjk = ik_tbl(jjk1, jjk2, jjk3)
-
         do iio = 1, system%no
             do jjo = 1, iio
                 ! Compute dot-products: <iik,iio|jjk,jjo>
