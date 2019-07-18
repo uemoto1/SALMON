@@ -138,6 +138,8 @@ module band
             & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
 
+        write(*, *) sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
+        
         return
     end subroutine retrieve_entire_zwf
 
