@@ -148,7 +148,7 @@ module band
         complex(8), intent(out) :: prod_ij(system%no, system%no)
         integer :: iio, jjo
 
-        complex(8) zdotc ! From BLAS
+        complex(8) ZDOTC ! From BLAS
 
         iik = ik_tbl(iik1, iik2, iik3)
         jjk = ik_tbl(jjk1, jjk2, jjk3)
