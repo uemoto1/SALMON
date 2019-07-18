@@ -140,28 +140,11 @@ module band
             & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
 
-        if(comm_is_root(nproc_id_global)) then
-        write(*, *) lbound(zwf_all, 1), ubound(zwf_all, 1), "#X"
-        write(*, *) lbound(zwf_all, 2), ubound(zwf_all, 2), "#X"
-        write(*, *) lbound(zwf_all, 3), ubound(zwf_all, 3), "#X"
-        write(*, *) lbound(zwf_all, 4), ubound(zwf_all, 4), "#X"
-        write(*, *) lbound(zwf_all, 5), ubound(zwf_all, 5), "#X"
-        write(*, *) lbound(zwf_all, 6), ubound(zwf_all, 6), "#X"
-        write(*, *) ik_tbl(1,1,1), "#K111"
-        write(*, *) ik_tbl(1,1,2), "#K112"
-        write(*, *) ik_tbl(1,2,1), "#K121"
-        write(*, *) system%hvol * sum(conjg(zwf_all_tmp(:,:,:,:,1,1)) * zwf_all_tmp(:,:,:,:,1,1))
-        write(*, *) system%hvol * sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
-        write(*, *) system%hvol * sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
-        endif
         return
     end subroutine retrieve_entire_zwf
 
 
     subroutine calc_prod(iik, jjk, prod_ij)
-        use salmon_communication, only: comm_summation, comm_is_root
-        use salmon_parallel, only: nproc_group_global, nproc_id_global
-
         implicit none
         integer, intent(in) :: iik, jjk
         complex(8), intent(out) :: prod_ij(system%no, system%no)
@@ -176,14 +159,6 @@ module band
                     & system%ngrid * system%nspin, &
                     & zwf_all(:, :, :, :, iio, iik), 1, &
                     & zwf_all(:, :, :, :, jjo, jjk), 1)
-                    if(comm_is_root(nproc_id_global)) then
-                        write(*, *) "#PRODS:", iik, iio, jjk, jjo
-                        write(*, *) system%hvol * sum(conjg(zwf_all(:,:,:,:,iio,iik)) * zwf_all(:,:,:,:,jjo,jjk))
-                        write(*, *) system%ngrid * system%nspin, system%Hvol * ZDOTC( &
-                        & system%ngrid * system%nspin, &
-                        & zwf_all(:, :, :, :, iio, iik), 1, &
-                        & zwf_all(:, :, :, :, jjo, jjk), 1)
-                    endif                
             end do
         end do
 
