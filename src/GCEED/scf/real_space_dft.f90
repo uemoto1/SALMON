@@ -1450,10 +1450,16 @@ endif
 if(write_gs_wfn_k == 'y') then
   if(iperiodic==3) then
     call write_wfn(lg,mg,spsi,info,system,k_rd)
+    
   else
     write(*,*) "error: write_gs_wfn_k='y' & iperiodic=0"
   end if
 end if
+
+! Experimental Implementation of Inner-Product Outputs:
+if(iperiodic==3) then
+  call write_prod_dk_data(lg, mg, system, info, spsi)
+endif
 
 ! output transition moment
 if(out_tm  == 'y') then
