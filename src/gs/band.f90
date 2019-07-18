@@ -104,7 +104,9 @@ module band
 
     subroutine retrieve_entire_zwf()
         use pack_unpack, only: copy_data
-        use salmon_communication, only: comm_summation
+        use salmon_communication, only: comm_summation, comm_is_root
+        use salmon_parallel, only: nproc_group_global, nproc_id_global
+      
         implicit none
         integer :: io
         integer, parameter :: im = 1, ispin = 1
@@ -138,6 +140,7 @@ module band
             & system%ngrid*system%nspin*system%no*system%nk, &
             & wf_info%icomm_rko)
 
+        if(comm_is_root(nproc_id_global)) &
         write(*, *) sum(conjg(zwf_all(:,:,:,:,1,1)) * zwf_all(:,:,:,:,1,1))
         
         return
