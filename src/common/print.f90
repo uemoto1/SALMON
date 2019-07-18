@@ -638,7 +638,7 @@ contains
               do jdk3 = 0, ndk
                 do io = 1, system%no
                   do jo = 1, system%no
-                    write(fh, '(6(i6,1x),2(e24.16e3,1x)') &
+                    write(fh, '(6(i6,1x),2(e24.16e3,1x))') &
                       & ik, jdk1, jdk2, jdk3, io, jo, &
                       & real(prod_dk(ik, jdk1, jdk2, jdk3, io, jo)), &
                       & aimag(prod_dk(ik, jdk1, jdk2, jdk3, io, jo))
