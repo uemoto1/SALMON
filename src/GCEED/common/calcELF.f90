@@ -13,7 +13,7 @@
 !  See the License for the specific language governing permissions and
 !  limitations under the License.
 !
-subroutine calcELF(srho,filename_ELF,ttmp)
+subroutine calcELF(srho,filename_ELF,ttmp,mg,srg_ob_1)
 use structures
 use salmon_parallel, only: nproc_group_global,nproc_group_kgrid
 use salmon_communication, only: comm_summation
@@ -25,6 +25,8 @@ use allocate_mat_sub
 use new_world_sub
 implicit none
 type(s_scalar),intent(in) :: srho
+type(s_rgrid), intent(in) :: mg
+type(s_sendrecv_grid), intent(inout) :: srg_ob_1
 
 integer :: iob,ix,iy,iz
 integer :: p_allob
@@ -92,7 +94,7 @@ if(iSCFRT==1)then
       if((ilsda==0.and.p_allob<=ifMST(1)).or.  &
          (ilsda==1.and.(p_allob<=ifMST(1).or.(p_allob>=MST(1)+1.and.p_allob<=MST(1)+ifMST(2)))))then
   
-        call calc_gradient(psi(:,:,:,iob,1),gradpsi(:,:,:,:))
+        call calc_gradient(psi(:,:,:,iob,1),gradpsi(:,:,:,:),mg,srg_ob_1)
   
   !$OMP parallel do private(iz,iy,ix)
         do iz=mg_sta(3),mg_end(3)
@@ -114,7 +116,7 @@ if(iSCFRT==1)then
       if((ilsda==0.and.p_allob<=ifMST(1)).or.  &
          (ilsda==1.and.(p_allob<=ifMST(1).or.(p_allob>=MST(1)+1.and.p_allob<=MST(1)+ifMST(2)))))then
   
-        call calc_gradient(zpsi(:,:,:,iob,1),gradzpsi(:,:,:,:))
+        call calc_gradient(zpsi(:,:,:,iob,1),gradzpsi(:,:,:,:),mg,srg_ob_1)
   
   !$OMP parallel do private(iz,iy,ix)
         do iz=mg_sta(3),mg_end(3)
@@ -134,7 +136,7 @@ if(iSCFRT==1)then
   call comm_summation(mrelftau,elftau,mg_num(1)*mg_num(2)*mg_num(3),nproc_group_kgrid)
 
 
-  call calc_gradient(rho_half(:,:,:),gradrho(:,:,:,:))
+  call calc_gradient(rho_half(:,:,:),gradrho(:,:,:,:),mg,srg_ob_1)
   do iz=ng_sta(3),ng_end(3)
   do iy=ng_sta(2),ng_end(2)
   do ix=ng_sta(1),ng_end(1)
@@ -186,7 +188,7 @@ else
         end if
       end if
  
-      call calc_gradient(cmatbox_m(:,:,:),gradzpsi(:,:,:,:))
+      call calc_gradient(cmatbox_m(:,:,:),gradzpsi(:,:,:,:),mg,srg_ob_1)
 
 
 
@@ -227,7 +229,7 @@ else
 
 
   
-  call calc_gradient(rho_half(:,:,:),gradrho(:,:,:,:))
+  call calc_gradient(rho_half(:,:,:),gradrho(:,:,:,:),mg,srg_ob_1)
 
 
 

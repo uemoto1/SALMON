@@ -16,7 +16,6 @@
 MODULE gradient2_sub
 
 use scf_data
-use sendrecv_sub
 implicit none 
 INTERFACE calc_gradient2
 

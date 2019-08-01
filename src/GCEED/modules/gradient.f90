@@ -30,13 +30,17 @@ CONTAINS
 !=======================================================================
 !=======================================================================
 
-SUBROUTINE R_calc_gradient(wk,grad_wk)
+SUBROUTINE R_calc_gradient(wk,grad_wk,mg,srg_ob_1)
 !$ use omp_lib
+use structure, only: s_sendrecv_grid
+use sendrecv_grid, only: update_overlap_real8
 
 implicit none
 real(8) :: wk(iwksta(1):iwkend(1),iwksta(2):iwkend(2),iwksta(3):iwkend(3))
 real(8) :: wk2(iwk2sta(1):iwk2end(1),iwk2sta(2):iwk2end(2),iwk2sta(3):iwk2end(3))
 real(8) :: grad_wk(3,iwk3sta(1):iwk3end(1),iwk3sta(2):iwk3end(2),iwk3sta(3):iwk3end(3))
+type(s_rgrid), intent(in) :: mg
+type(s_sendrecv_grid), intent(inout) :: srg_ob_1
 
 integer :: ix,iy,iz
 
@@ -51,12 +55,14 @@ if(iwk_size==1.or.iwk_size==11)then
   end do
   end do
 
-  call sendrecv(wk2)
+  !call sendrecv(wk2)
+  call update_overlap_real8(srg_ob_1, mg, wk2)
   call calc_gradient2(wk2,grad_wk)
 
 else if(iwk_size==2.or.iwk_size==12)then
   
-  call sendrecv(wk)
+  !call sendrecv(wk)
+  call update_overlap_real8(srg_ob_1, mg, wk)
   call calc_gradient2(wk,grad_wk)
 
 end if
@@ -67,13 +73,17 @@ END SUBROUTINE R_calc_gradient
 
 !=======================================================================
 
-SUBROUTINE C_calc_gradient(wk,grad_wk)
+SUBROUTINE C_calc_gradient(wk,grad_wk,mg,srg_ob_1)
 !$ use omp_lib
+use structure, only: s_sendrecv_grid
+use sendrecv_grid, only: update_overlap_complex8
 
 implicit none
 complex(8) :: wk(iwksta(1):iwkend(1),iwksta(2):iwkend(2),iwksta(3):iwkend(3))
 complex(8) :: wk2(iwk2sta(1):iwk2end(1),iwk2sta(2):iwk2end(2),iwk2sta(3):iwk2end(3))
 complex(8) :: grad_wk(3,iwk3sta(1):iwk3end(1),iwk3sta(2):iwk3end(2),iwk3sta(3):iwk3end(3))
+type(s_rgrid), intent(in) :: mg
+type(s_sendrecv_grid), intent(inout) :: srg_ob_1
 
 integer :: ix,iy,iz
 
@@ -88,12 +98,14 @@ if(iwk_size==1.or.iwk_size==11)then
   end do
   end do
 
-  call sendrecv(wk2)
+  !call sendrecv(wk2)
+  call update_overlap_complex8(srg_ob_1, mg, wk2)
   call calc_gradient2(wk2,grad_wk)
 
 else if(iwk_size==2.or.iwk_size==12)then
   
-  call sendrecv(wk)
+  !call sendrecv(wk)
+  call update_overlap_complex8(srg_ob_1, mg, wk)
   call calc_gradient2(wk,grad_wk)
 
 end if

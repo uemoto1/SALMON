@@ -528,7 +528,7 @@ type(s_orbital_parallel) :: info
 type(s_stencil) :: stencil
 type(s_orbital) :: spsi_in,spsi_out
 type(s_orbital) :: tpsi ! temporary wavefunctions
-type(s_sendrecv_grid) :: srg,srg_ng
+type(s_sendrecv_grid) :: srg,srg_ng,srg_ob_1
 type(s_pp_nlcc) :: ppn
 type(s_reciprocal_grid) :: fg
 type(s_md) :: md
@@ -615,6 +615,12 @@ call timer_begin(LOG_INIT_TIME_PROPAGATION)
   neig(3, 1) = kup_array(1)
   neig(3, 2) = kdw_array(1)
   call init_sendrecv_grid(srg, mg, iobnum * k_num, &
+    & nproc_group_korbital, neig)
+  ! call init_sendrecv_grid(srg, mg, iobnum * k_num, &
+  !   & nproc_group_korbital, neig)
+  ! call init_sendrecv_grid(srg_ob, mg, nspin, &
+  !   & nproc_group_korbital, neig)
+  call init_sendrecv_grid(srg_ob_1, mg, 1, &
     & nproc_group_korbital, neig)
 
   neig_ng(1, 1) = iup_array(2)
