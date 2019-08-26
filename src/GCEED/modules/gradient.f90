@@ -109,7 +109,7 @@ complex(8) :: tmp( &
   & mg%is_array(1):mg%ie_array(1), &
   & mg%is_array(2):mg%ie_array(2), &
   & mg%is_array(3):mg%ie_array(3))
-complex(8) :: grad_tmp(1:3 &
+complex(8) :: grad_tmp(1:3, &
   & mg%is_array(1):mg%ie_array(1), &
   & mg%is_array(2):mg%ie_array(2), &
   & mg%is_array(3):mg%ie_array(3))
