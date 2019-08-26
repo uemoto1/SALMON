@@ -23,7 +23,6 @@ use scf_data
 use gradient_sub
 use allocate_mat_sub
 use new_world_sub
-use structures, only: s_sendrecv_grid
 implicit none
 type(s_rgrid),intent(in)            :: mg
 type(s_rgrid),intent(in)            :: ng
