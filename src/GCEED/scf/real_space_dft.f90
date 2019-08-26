@@ -914,7 +914,7 @@ end if
 if(yn_out_elf=='y')then
   allocate(elf(lg_sta(1):lg_end(1),lg_sta(2):lg_end(2),      &
                lg_sta(3):lg_end(3)))
-  call calcELF(ng,info,srho,0)
+  call calcELF(mg,ng,info,srho,0,srg_ob_1)
   call writeelf(lg,elf,icoo1d,hgs,igc_is,igc_ie,gridcoo,iscfrt)
   deallocate(elf)
 end if
