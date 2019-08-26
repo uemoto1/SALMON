@@ -67,7 +67,7 @@ real(8) :: rho_half(mg%is(1):mg%ie(1),   &
                     mg%is(2):mg%ie(2),   &
                     mg%is(3):mg%ie(3))
 
-
+write(999,*) '0'; flush(999)
 
 !$OMP parallel do private(iz,iy,ix)
 do iz=mg%is(3),mg%ie(3)
@@ -82,6 +82,7 @@ mrcurden=0.d0
 
 if(iSCFRT==1)then
   if(iperiodic==0)then
+    write(999,*) '10'; flush(999)
 
     do iob=1,iobnum
       call calc_allob(iob,p_allob,itotmst,mst,iobnum)
@@ -102,6 +103,7 @@ if(iSCFRT==1)then
         end do
       end if
     end do
+    write(999,*) '20'; flush(999)
 
   else if(iperiodic==3)then
 
@@ -184,6 +186,7 @@ else
  
       call calc_gradient(mg, srg, mg%is_array, mg%ie_array, cmatbox_m(:,:,:),gradzpsi(:,:,:,:))
 
+      write(999,*) '30'; flush(999)
 
 
 !$OMP parallel do private(iz,iy,ix)
@@ -213,6 +216,7 @@ else
     end if
   end do
 
+  write(999,*) '40'; flush(999)
 
 
   
@@ -224,6 +228,8 @@ else
 
   
   call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
+
+  write(999,*) '50'; flush(999)
 
 
 
@@ -239,10 +245,14 @@ else
   end do
   end do
 
+  write(999,*) '60'; flush(999)
 
 
 
 end if
+
+write(999,*) '70'; flush(999)
+
 
 ! matbox_l stores ELF
 matbox_l=0.d0
@@ -255,6 +265,9 @@ do ix=ng%is(1),ng%ie(1)
 end do
 end do
 end do
+
+write(999,*) '80'; flush(999)
+
 
 call comm_summation(matbox_l,elf,lg_num(1)*lg_num(2)*lg_num(3),nproc_group_global)
 
