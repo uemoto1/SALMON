@@ -17,7 +17,7 @@ MODULE gradient_sub
 
 use scf_data
 use gradient2_sub
-use structures, only: s_rgrid, s_srgrid
+use structures, only: s_rgrid, s_sendrecv_grid
 
 implicit none 
 INTERFACE calc_gradient
@@ -36,7 +36,7 @@ SUBROUTINE R_calc_gradient(mg, srg, is_array_wk, ie_array_wk, wk, grad_wk)
 
 implicit none
 type(s_rgrid), intent(in) :: mg
-type(s_srgrid), intent(in) :: srg
+type(s_sendrecv_grid), intent(in) :: srg
 integer, intent(in) :: is_array_wk(1:3)
 integer, intent(in) :: ie_array_wk(1:3)
 real(8), intent(in) :: wk( &
@@ -89,7 +89,7 @@ SUBROUTINE C_calc_gradient(mg, srg, is_array_wk, ie_array_wk, wk, grad_wk)
 
 implicit none
 type(s_rgrid), intent(in) :: mg
-type(s_srgrid), intent(in) :: srg
+type(s_sendrecv_grid), intent(in) :: srg
 integer, intent(in) :: is_array_wk(1:3)
 integer, intent(in) :: ie_array_wk(1:3)
 complex(8), intent(in) :: wk( &
