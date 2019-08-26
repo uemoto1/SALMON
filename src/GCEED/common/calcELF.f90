@@ -23,13 +23,13 @@ use scf_data
 use gradient_sub
 use allocate_mat_sub
 use new_world_sub
-use structure, only: s_srgrid
+use structure, only: s_sendrecv_grid
 implicit none
 type(s_rgrid),intent(in)            :: mg
 type(s_rgrid),intent(in)            :: ng
 type(s_orbital_parallel),intent(in) :: info
 type(s_scalar),intent(in) :: srho
-type(s_srgrid),intent(in) :: srg
+type(s_sendrecv_grid),intent(inout) :: srg
 integer :: iob,ix,iy,iz
 integer :: p_allob
 integer :: ttmp
