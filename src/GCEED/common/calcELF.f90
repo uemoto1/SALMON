@@ -223,7 +223,7 @@ else
 
 
   
-  call calc_gradient(mg, srg, mg%is_array, mg%ie_array, mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
+  call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
 
 
 
