@@ -147,6 +147,7 @@ if(iSCFRT==1)then
 else 
 
   do iob=1,iobnum
+    write(999,*) 'loop', iob; flush(999)
 
     call calc_allob(iob,p_allob,itotmst,mst,iobnum)
     if((ilsda==0.and.p_allob<=ifMST(1)).or.   &
@@ -183,6 +184,8 @@ else
           end do
         end if
       end if
+      write(999,*) '25'; flush(999)
+
  
       call calc_gradient(mg, srg, mg%is_array, mg%ie_array, cmatbox_m(:,:,:),gradzpsi(:,:,:,:))
 
