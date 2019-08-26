@@ -17,7 +17,7 @@ MODULE gradient_sub
 
 use scf_data
 use gradient2_sub
-use structure, only: s_rgrid, s_srgrid
+use structures, only: s_rgrid, s_srgrid
 
 implicit none 
 INTERFACE calc_gradient
