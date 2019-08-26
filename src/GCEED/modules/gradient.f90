@@ -18,6 +18,7 @@ MODULE gradient_sub
 use scf_data
 use gradient2_sub
 use structures, only: s_rgrid, s_sendrecv_grid
+use sendrecv_grid, only: update_overlap_complex8, update_overlap_real8
 
 implicit none 
 INTERFACE calc_gradient
@@ -52,6 +53,10 @@ real(8) :: tmp( &
   & mg%is_array(1):mg%ie_array(1), &
   & mg%is_array(2):mg%ie_array(2), &
   & mg%is_array(3):mg%ie_array(3))
+real(8) :: grad_tmp(3, &
+  & mg%is_array(1):mg%ie_array(1), &
+  & mg%is_array(2):mg%ie_array(2), &
+  & mg%is_array(3):mg%ie_array(3))
 
 integer :: ix,iy,iz
 
@@ -66,14 +71,14 @@ call copy_data( &
     & is_array_wk(3):ie_array_wk(3)))
   
 call update_overlap_real8(srg, mg, tmp)
-call calc_gradient2(tmp, grad_wk)
+call calc_gradient2(tmp, grad_tmp)
 
 call copy_data( &
-  & tmp( &
+  & grad_tmp(1:3, &
     & is_array_wk(1):ie_array_wk(1), &
     & is_array_wk(2):ie_array_wk(2), &
     & is_array_wk(3):ie_array_wk(3)), &
-  & grad_wk( &
+  & grad_wk(1:3, &
     & is_array_wk(1):ie_array_wk(1), &
     & is_array_wk(2):ie_array_wk(2), &
     & is_array_wk(3):ie_array_wk(3)))
@@ -104,6 +109,10 @@ complex(8) :: tmp( &
   & mg%is_array(1):mg%ie_array(1), &
   & mg%is_array(2):mg%ie_array(2), &
   & mg%is_array(3):mg%ie_array(3))
+complex(8) :: grad_tmp(1:3 &
+  & mg%is_array(1):mg%ie_array(1), &
+  & mg%is_array(2):mg%ie_array(2), &
+  & mg%is_array(3):mg%ie_array(3))
 
   
   call copy_data( &
@@ -117,14 +126,14 @@ complex(8) :: tmp( &
     & is_array_wk(3):ie_array_wk(3)))
   
 call update_overlap_complex8(srg, mg, tmp)
-call calc_gradient2(tmp, grad_wk)
+call calc_gradient2(tmp, grad_tmp)
 
 call copy_data( &
-  & tmp( &
+  & grad_tmp(1:3, &
     & is_array_wk(1):ie_array_wk(1), &
     & is_array_wk(2):ie_array_wk(2), &
     & is_array_wk(3):ie_array_wk(3)), &
-  & grad_wk( &
+  & grad_wk(1:3, &
     & is_array_wk(1):ie_array_wk(1), &
     & is_array_wk(2):ie_array_wk(2), &
     & is_array_wk(3):ie_array_wk(3)))
