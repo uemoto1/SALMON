@@ -144,7 +144,7 @@ if(iSCFRT==1)then
   write(999,*) "lbound(gradrho, 2), ubound(gradrho, 2)", lbound(gradrho, 2), ubound(gradrho, 2)
   write(999,*) "lbound(gradrho, 3), ubound(gradrho, 3)", lbound(gradrho, 3), ubound(gradrho, 3)
   write(999,*) "lbound(gradrho, 4), ubound(gradrho, 4)", lbound(gradrho, 4), ubound(gradrho, 4)
-
+  flush(999)
   call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
   write(999,*) '23'; flush(999)
   do iz=ng%is(3),ng%ie(3)
