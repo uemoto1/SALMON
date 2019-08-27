@@ -133,6 +133,17 @@ if(iSCFRT==1)then
   call comm_summation(mrelftau,elftau,mg_num(1)*mg_num(2)*mg_num(3),info%icomm_o)
   write(999,*) '22'; flush(999)
 
+  write(999,*) "mg%is", mg%is
+  write(999,*) "mg%ie", mg%ie
+  write(999,*) "mg%is_array", mg%is_array
+  write(999,*) "mg%ie_array", mg%ie_array
+  write(999,*) "lbound(rho_half, 1), ubound(rho_half, 1)", lbound(rho_half, 1), ubound(rho_half, 1)
+  write(999,*) "lbound(rho_half, 2), ubound(rho_half, 2)", lbound(rho_half, 2), ubound(rho_half, 2)
+  write(999,*) "lbound(rho_half, 3), ubound(rho_half, 3)", lbound(rho_half, 3), ubound(rho_half, 3)
+  write(999,*) "lbound(grad_rho, 1), ubound(grad_rho, 1)", lbound(grad_rho, 1), ubound(grad_rho, 1)
+  write(999,*) "lbound(grad_rho, 2), ubound(grad_rho, 2)", lbound(grad_rho, 2), ubound(grad_rho, 2)
+  write(999,*) "lbound(grad_rho, 3), ubound(grad_rho, 3)", lbound(grad_rho, 3), ubound(grad_rho, 3)
+  write(999,*) "lbound(grad_rho, 4), ubound(grad_rho, 4)", lbound(grad_rho, 4), ubound(grad_rho, 4)
 
   call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
   write(999,*) '23'; flush(999)
