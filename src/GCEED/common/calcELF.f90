@@ -139,11 +139,11 @@ if(iSCFRT==1)then
   write(999,*) "mg%ie_array", mg%ie_array
   write(999,*) "lbound(rho_half, 1), ubound(rho_half, 1)", lbound(rho_half, 1), ubound(rho_half, 1)
   write(999,*) "lbound(rho_half, 2), ubound(rho_half, 2)", lbound(rho_half, 2), ubound(rho_half, 2)
-  write(999,*) "lbound(rho_half, 3), ubound(rho_half, 3)", lbound(rho_half, 3), ubound(rho_half, 3)
-  write(999,*) "lbound(grad_rho, 1), ubound(grad_rho, 1)", lbound(grad_rho, 1), ubound(grad_rho, 1)
-  write(999,*) "lbound(grad_rho, 2), ubound(grad_rho, 2)", lbound(grad_rho, 2), ubound(grad_rho, 2)
-  write(999,*) "lbound(grad_rho, 3), ubound(grad_rho, 3)", lbound(grad_rho, 3), ubound(grad_rho, 3)
-  write(999,*) "lbound(grad_rho, 4), ubound(grad_rho, 4)", lbound(grad_rho, 4), ubound(grad_rho, 4)
+  write(999,*) "lbound(, 1), ubound(grad_rho, 1)", lbound(gradrho, 1), ubound(gradrho, 1)
+  write(999,*) "lbound(gradrho, 3), ubound(gradrho, 3)", lbound(rho_half, 3), ubound(rho_half, 3)
+  write(999,*) "lbound(gradrho, 2), ubound(gradrho, 2)", lbound(gradrho, 2), ubound(gradrho, 2)
+  write(999,*) "lbound(gradrho, 3), ubound(gradrho, 3)", lbound(gradrho, 3), ubound(gradrho, 3)
+  write(999,*) "lbound(gradrho, 4), ubound(gradrho, 4)", lbound(gradrho, 4), ubound(gradrho, 4)
 
   call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
   write(999,*) '23'; flush(999)
