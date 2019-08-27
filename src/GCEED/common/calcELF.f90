@@ -129,10 +129,13 @@ if(iSCFRT==1)then
 
   end if
 
+  write(999,*) '21'; flush(999)
   call comm_summation(mrelftau,elftau,mg_num(1)*mg_num(2)*mg_num(3),info%icomm_o)
+  write(999,*) '22'; flush(999)
 
 
   call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
+  write(999,*) '23'; flush(999)
   do iz=ng%is(3),ng%ie(3)
   do iy=ng%is(2),ng%ie(2)
   do ix=ng%is(1),ng%ie(1)
@@ -143,6 +146,8 @@ if(iSCFRT==1)then
   end do
   end do
   end do
+  write(999,*) '24'; flush(999)
+
 
 else 
 
