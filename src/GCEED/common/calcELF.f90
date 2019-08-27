@@ -89,7 +89,7 @@ if(iSCFRT==1)then
       if((ilsda==0.and.p_allob<=ifMST(1)).or.  &
          (ilsda==1.and.(p_allob<=ifMST(1).or.(p_allob>=MST(1)+1.and.p_allob<=MST(1)+ifMST(2)))))then
   
-          call calc_gradient(mg, srg, mg%is_array, mg%ie_array, psi(:,:,:,iob,1),gradpsi(:,:,:,:))
+          call calc_gradient(mg, srg, mg%is, mg%ie, psi(:,:,:,iob,1),gradpsi(:,:,:,:))
   
   !$OMP parallel do private(iz,iy,ix)
         do iz=mg%is(3),mg%ie(3)
@@ -112,7 +112,7 @@ if(iSCFRT==1)then
       if((ilsda==0.and.p_allob<=ifMST(1)).or.  &
          (ilsda==1.and.(p_allob<=ifMST(1).or.(p_allob>=MST(1)+1.and.p_allob<=MST(1)+ifMST(2)))))then
   
-          call calc_gradient(mg, srg, mg%is_array, mg%ie_array, zpsi(:,:,:,iob,1),gradzpsi(:,:,:,:))
+          call calc_gradient(mg, srg, mg%is, mg%ie, zpsi(:,:,:,iob,1),gradzpsi(:,:,:,:))
   
   !$OMP parallel do private(iz,iy,ix)
         do iz=mg%is(3),mg%ie(3)
@@ -145,7 +145,7 @@ if(iSCFRT==1)then
   write(999,*) "lbound(gradrho, 3), ubound(gradrho, 3)", lbound(gradrho, 3), ubound(gradrho, 3)
   write(999,*) "lbound(gradrho, 4), ubound(gradrho, 4)", lbound(gradrho, 4), ubound(gradrho, 4)
   flush(999)
-  call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
+  call calc_gradient(mg, srg, mg%is, mg%ie, rho_half(:,:,:),gradrho(:,:,:,:))
   write(999,*) '23'; flush(999)
   do iz=ng%is(3),ng%ie(3)
   do iy=ng%is(2),ng%ie(2)
@@ -203,7 +203,7 @@ else
       write(999,*) '25'; flush(999)
 
  
-      call calc_gradient(mg, srg, mg%is_array, mg%ie_array, cmatbox_m(:,:,:),gradzpsi(:,:,:,:))
+      call calc_gradient(mg, srg, mg%is, mg%ie, cmatbox_m(:,:,:),gradzpsi(:,:,:,:))
 
       write(999,*) '30'; flush(999)
 
@@ -246,7 +246,7 @@ else
 
 
   
-  call calc_gradient(mg, srg, mg%is_array, mg%ie_array, rho_half(:,:,:),gradrho(:,:,:,:))
+  call calc_gradient(mg, srg, mg%is, mg%ie, rho_half(:,:,:),gradrho(:,:,:,:))
 
   write(999,*) '50'; flush(999)
 
