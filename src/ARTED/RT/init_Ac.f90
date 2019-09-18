@@ -177,7 +177,7 @@ Subroutine init_Ac
     end select
 
     do iter=0,Nt+1
-      tt=iter*dt - 0.5d0*pulse_tw1 - T1_T2
+      tt=iter*dt - 0.5d0*pulse_tw2 - T1_T2
       if (abs(tt)<0.5d0*pulse_tw2) then
         Ac_ext(iter,:)=Ac_ext(iter,:) &
           -f0_2/omega2*(cos(pi*tt/pulse_tw2))**npower &
