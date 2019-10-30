@@ -22,7 +22,9 @@ module salmon_maxwell
     !share
     
     !weyl
-    type(s_vector) :: vec_Ac_tmp
+    type(s_vector) :: vec_Ac_tmp            ! Tempolary variable used in weyl_calc
+    real(8)        :: edensity_emfield      ! Field energy: (E^2 + H^2)
+    real(8)        :: edensity_absorb       ! Loss energy: integrate(E*J)
     
     !coulomb
     
