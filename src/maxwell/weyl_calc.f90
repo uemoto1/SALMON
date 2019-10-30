@@ -348,10 +348,10 @@ contains
       do i2 = fs%mg%is(2), fs%mg%ie(2)
         do i1 = fs%mg%is(1), fs%mg%ie(1)
           fw%edensity_emfield(i1, i2, i3) = (1d0 / (8d0 * pi)) * ( &
-            & norm2(ff%vec_e(:, i1, i2, i3)) + norm2(ff%vec_h(:, i1, i2, i3))
+            & norm2(ff%vec_e(:, i1, i2, i3)) + norm2(ff%vec_h(:, i1, i2, i3)) &
             & )
           fw%edensity_absorb(i1, i2, i3) = fw%edensity_absorb(i1, i2, i3) + ( &
-            & dot_product(ff%vec_e(:, i1, i2, i3), ff%vec_j_em(:, i1, i2, i3))
+            & dot_product(ff%vec_e(:, i1, i2, i3), ff%vec_j_em(:, i1, i2, i3)) &
             & ) * dt_em
         end do
       end do
