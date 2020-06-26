@@ -84,6 +84,8 @@ real(8), allocatable :: Ac_inc(:, :)
 integer :: nmacro_mygroup, isize_mygroup
 
 logical :: is_checkpoint_iter, is_shutdown_time
+! Only for 1D calculation outputs:
+integer :: fh_inc_wave, fh_ref_wave, fh_trans_wave
 
 ! character(256) :: file_debug_log
 !! Open logfile for debugging
@@ -339,6 +341,8 @@ subroutine initialization_ms()
     end do
 
     call incident()
+
+
 
     return    
 end subroutine initialization_ms
@@ -659,6 +663,74 @@ subroutine incident()
 
     return
  end subroutine incident
+
+
+ ! Experimetal Implementation of Incident/Reflection/Transmit field output
+ subroutine open_wave_data_file()
+    implicit none
+    fh_wave = open_filehandle(trim(ms%basedir) // trim(sysname) // "_wave.data")
+    write(fh_wave, '(a)') "# 1D multiscale calculation:"
+    write(fh_wave, '(a)') "# E_inc: E-field amplitude of incident wave"
+    write(fh_wave, '(a)') "# E_ref: E-field amplitude of reflected wave"
+    write(fh_wave, '(a)') "# E_tra: E-field amplitude of transmitted wave"
+    write(fh_wave, '("#",99(1X,I0,":",A,"[",A,"]"))') &
+        & 1, "Time", trim(t_unit_time%name), &
+        & 2, "E_inc_x", trim(t_unit_elec%name), &
+        & 3, "E_inc_y", trim(t_unit_elec%name), &
+        & 4, "E_inc_z", trim(t_unit_elec%name), &
+        & 5, "E_ref_x", trim(t_unit_elec%name), &
+        & 6, "E_ref_y", trim(t_unit_elec%name), &
+        & 7, "E_ref_z", trim(t_unit_elec%name), &
+        & 8, "E_tra_x", trim(t_unit_elec%name), &
+        & 9, "E_tra_y", trim(t_unit_elec%name), &
+        & 10, "E_tra_z", trim(t_unit_elec%name)
+end subroutine open_wave_data_file
+
+ ! Experimetal Implementation of Incident/Reflection/Transmit field output
+subroutine write_wave_data_file()
+    implicit none
+    real(8) :: e_inc(3)
+    real(8) :: e_ref(3)
+    real(8) :: e_tra(3)
+    real(8) :: dt_Ac(3)
+    real(8) :: dx_Ac(3)
+    integer :: iiy, iiz
+
+    iiy = fs%mg%is(2)
+    iiz = fs%mg%is(3)
+
+    ! Left side boundary:
+    dx_Ac(:) = (fw%vec_Ac%v(:,0,iiy,iiz) - fw%vec_Ac%v(:,-1,iiy,iiz)) / fs%hgs(1)
+    dt_Ac(:) = (0.5d0 * (fw%vec_Ac_new%v(:,0,iiy,iiz) + fw%vec_Ac_new%v(:,-1,iiy,iiz)) & 
+        & - 0.5d0 * (fw%vec_Ac_old%v(:,0,iiy,iiz) + fw%vec_Ac_old%v(:,-1,iiy,iiz))) / (2 * dt)
+    
+    e_inc(:) = 0.5d0 * (dt_Ac + cspeed_au * dx_Ac)
+    e_ref(:) = 0.5d0 * (dt_Ac - cspeed_au * dx_Ac)
+
+    ! Right side boundary:
+    dx_Ac(:) = (fw%vec_Ac%v(:,nx_m+2,iiy,iiz) - fw%vec_Ac%v(:,nx_m+1,iiy,iiz)) / fs%hgs(1)
+    dt_Ac(:) = (0.5d0 * (fw%vec_Ac_new%v(:,nx_m+2,iiy,iiz) + fw%vec_Ac_new%v(:,nx_m+1,iiy,iiz)) & 
+        & - 0.5d0 * (fw%vec_Ac_old%v(:,nx_m+2,iiy,iiz) + fw%vec_Ac_old%v(:,nx_m+1,iiy,iiz))) / (2 * dt)
+    
+    e_tra(:) = 0.5d0 * (dt_Ac + cspeed_au * dx_Ac)
+
+    write(fh_wave, '(99(e23.15e3, 1x))')  &
+        & itt * dt * t_unit_time%conv, &
+        & e_inc(1) * t_unit_elec%conv, &
+        & e_inc(2) * t_unit_elec%conv, &
+        & e_inc(3) * t_unit_elec%conv, &
+        & e_ref(1) * t_unit_elec%conv, &
+        & e_ref(2) * t_unit_elec%conv, &
+        & e_ref(3) * t_unit_elec%conv, &
+        & e_tra(1) * t_unit_elec%conv, &
+        & e_tra(2) * t_unit_elec%conv, &
+        & e_tra(3) * t_unit_elec%conv
+    return
+end subroutine write_wave_data_file
+    
+    
+    
+
 
 
 end subroutine main_ms
